@@ -1,0 +1,4 @@
+name = "MittagLefflerFunctions"
+uuid = "a4594175-0cc1-4db6-a23d-90b6af50fe56"
+authors = ["William McLean <w.mclean@unsw.edu.au>"]
+version = "0.1.0"
