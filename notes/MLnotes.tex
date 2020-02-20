@@ -1,0 +1,211 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath,amsfonts,amsthm}
+\title{Notes on the Mittag--Leffler function}
+\author{William McLean}
+\date{\today}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareMathOperator*{\res}{res}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The two-argument, Mittag--Leffler function is defined by the power series
+\[
+E_{\alpha,\beta}(z)=\sum_{n=0}^\infty\frac{z^n}{\Gamma(\beta+n\alpha)}
+\quad\text{for $z\in\mathbb{C}$, $\alpha>0$, $\beta>0$.}
+\]
+The reciprocal of the Gamma function may be written as an integral along a
+Hankel contour,
+\[
+\frac{1}{\Gamma(\beta+n\alpha)}=\frac{1}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w\,dw}{w^{\beta+n\alpha}},
+\]
+and therefore, if $|z|<|w^\alpha|$ for all~$w$ on the contour, then
+\[
+E_{\alpha,\beta}(z)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}\frac{e^w}{w^\beta}
+    \sum_{n=0}^\infty(zw^{-\alpha})^n\,dw
+    =\frac{1}{2\pi i}\int_{-\infty}^{0^+}\frac{e^w}{w^\beta}\,
+    \frac{dw}{1-zw^{-\alpha}},
+\]
+and so
+\begin{equation}\label{eq: integral repn}
+E_{\alpha,\beta}(z)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w\,dw}{w^\beta-zw^{\beta-\alpha}}.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Asymptotic expansion}
+Since
+\[
+\frac{1}{w^\beta-zw^{\beta-\alpha}}=\frac{-1}{zw^{\beta-\alpha}}
+    \,\frac{1}{1-w^\alpha z^{-1}}
+\]
+and
+\[
+\frac{1}{1-w^\alpha z^{-1}}=\sum_{n=0}^N(w^\alpha z^{-1})^n
+    +\frac{(w^\alpha z^{-1})^{N+1}}{1-w^\alpha z^{-1}},
+\]
+we see from~\eqref{eq: integral repn} that
+\[
+E_{\alpha,\beta}(z)=\sum_{n=0}^N\frac{-1}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w(w^\alpha z^{-1})^n}{zw^{\beta-\alpha}}\,dw+R_N(z),
+\]
+where the remainder term is
+\[
+R_N(z)=\frac{-1}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w(w^\alpha z^{-1})^{N+1}\,dw}{zw^{\beta-\alpha}(1-w^\alpha z^{-1})}.
+\]
+The $n$th term equals
+\[
+\frac{-z^{-1-n}}{2\pi i}\int_{-\infty}^{0^+}e^w w^{(n+1)\alpha-\beta}\,dw,
+\]
+and if we assume $\alpha-\beta>-1$ then by collapsing the contour onto the 
+negative real axis and using the substitutions~$w=re^{\pm i\pi}$, we obtain
+\[
+\frac{-1}{2\pi i}\int_{-\infty}^{0^+}e^w w^{(n+1)\alpha-\beta}\,dw
+    =\frac{e^{i\pi[(n+1)\alpha-\beta]}-e^{-i\pi[(n+1)\alpha-\beta]}}{2\pi i}
+    \int_0^\infty e^{-r}r^{(n+1)\alpha-\beta}\,dr
+\]
+so
+\[
+E_{\alpha,\beta}(z)=R_N(z)+\frac{1}{\pi}\sum_{n=0}^N
+    \sin\pi[(n+1)\alpha-\beta]\,\Gamma\bigl((n+1)\alpha-\beta+1\bigr)z^{-1-n}.
+\]
+Also,
+\[
+R_n(z)=\frac{z^{-1-N}}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w w^{(N+2)\alpha-\beta}}{w^\alpha-z}\,dw
+\]
+If $z=x>0$, then this integrand has a pole at~$w=x^{1/\alpha}$ (in addition to
+the branch point at~$w=0$) so we collect a residue when collapsing the contour 
+onto the negative real axis.  Since
+\[
+\res_{w\to x^{1/\alpha}}\frac{e^w w^{(N+2)\alpha-\beta}}{w^\alpha-x}
+    =\exp(x^{1/\alpha})\,x^{(N+2)-\beta/\alpha}\lim_{w\to x^{1/\alpha}}
+    \frac{w-x^{1/\alpha}}{w^\alpha-x},
+\]
+and the limit equals $x^{-1+1/\alpha}/\alpha$, we find that
+\[
+R_N(x)=\frac{x^{(1-\beta)/\alpha}}{\alpha}\,\exp(x^{1/\alpha})
+    +\frac{x^{-1-N}}{2\pi i}\int_0^\infty e^{-r}r^{(N+2)\alpha-\beta}\biggr(
+     \frac{e^{-i\pi[(N+2)\alpha-\beta]}}{r^\alpha e^{-i\pi\alpha}-x}
+    -\frac{e^{i\pi[(N+2)\alpha-\beta]}}{r^\alpha e^{i\pi\alpha}-x}\biggr)\,dr.
+\]
+Here,
+\[
+\frac{1}{2i}\biggr(
+     \frac{e^{-i\pi[(N+2)\alpha-\beta]}}{r^\alpha e^{-i\pi\alpha}-x}
+    -\frac{e^{i\pi[(N+2)\alpha-\beta]}}{r^\alpha e^{i\pi\alpha}-x}\biggr)
+    =\frac{r^\alpha\sin\pi[\beta-(N+1)\alpha]+x\sin\pi\alpha}%
+{(r^\alpha-x\cos\pi\alpha)^2+x^2\sin^2\pi\alpha},
+\] 
+so we have
+\[
+E_{\alpha,\beta}(x)=\frac{x^{(1-\beta)/\alpha}}{\alpha}\,\exp(x^{1/\alpha})
+    +\frac{1}{\pi}\sum_{n=0}^N
+    \sin\pi[(n+1)\alpha-\beta]\,\Gamma\bigl((n+1)\alpha-\beta+1\bigr)x^{-1-n}
+    +\tilde R_N(x),
+\]
+where
+\[
+\tilde R_N(x)=\frac{x^{-1-N}}{\pi}\int_0^\infty e^{-r}r^{(N+2)\alpha-\beta}
+    \frac{r^\alpha\sin\pi[\beta-(N+1)\alpha]+x\sin\pi\alpha}%
+{(r^\alpha-x\cos\pi\alpha)^2+x^2\sin^2\pi\alpha}\,dr.
+\]
+
+If $z=-x$ for~$x>0$, then we obtain in the same way
+\[
+R_N(-x)=(-1)^{N+1}\,\frac{x^{-1-N}}{\pi}\int_0^\infty 
+    e^{-r}r^{(N+2)\alpha-\beta}
+    \frac{r^\alpha\sin\pi[\beta-(N+1)\alpha]-x\sin\pi\alpha}%
+{(r^\alpha+x\cos\pi\alpha)^2+x^2\sin^2\pi\alpha}\,dr.
+\]
+Let
+\begin{equation}\label{eq: Cpm}
+C_\pm(\alpha, \beta, N)=\sup_{0\le y<\infty}
+    \biggl|\frac{ay\pm b}{(y\mp c)^2+b^2}\biggr|
+\end{equation}
+where
+\begin{equation}\label{eq: A B C}
+a=\sin\pi[\beta-(N+2)\alpha],\qquad b=\sin\pi\alpha,\qquad c=\cos\pi\alpha,
+\end{equation}
+and note that
+\[
+\int_0^\infty e^{-r}r^{(N+2)\alpha-\beta}\,dr
+    =\Gamma\bigl((N+2)\alpha-\beta+1\bigr).
+\]
+Thus,
+\[
+|\tilde R_N(x)|\le\frac{C_+(\alpha,\beta,N)}{\pi}\,
+    \Gamma\bigl((N+2)\alpha-\beta+1\bigr)x^{-2-N}
+\]
+and
+\[
+|R_N(-x)|\le\frac{C_-(\alpha,\beta,N)}{\pi}\,
+    \Gamma\bigl((N+2)\alpha-\beta+1\bigr)x^{-2-N}.
+\]
+
+\begin{lemma}
+Consider $C_\pm(\alpha,\beta,N)$ defined by \eqref{eq: Cpm}~and 
+\eqref{eq: A B C}.
+\begin{enumerate}
+\item
+If $a=0$ and $c\ge0$, then
+\[
+C_+(\alpha, \beta, N)=\frac{1}{|b|}\quad\text{and}\quad
+C_-(\alpha, \beta, N)=|b|.
+\]
+\item 
+If $a=0$ and $c<0$, then
+\[
+C_+(\alpha, \beta, N)=|b|\quad\text{and}\quad
+C_-(\alpha, \beta, N)=\frac{1}{|b|}.
+\]
+\item
+Otherwise, if $a\ne0$, then we let $S_\pm$ denote the set of positive (real) 
+roots of the quadratic equation
+\begin{equation}\label{eq: A B C quadratic}
+ay^2\pm2by-(a+2bc)=0.
+\end{equation}
+\begin{enumerate}
+\item If $S=\emptyset$, then
+\[
+C_+(\alpha, \beta, N)=|b|\quad\text{and}\quad C_-(\alpha, \beta, N)=|b|.
+\]
+\item If $S\ne\emptyset$, then
+\[
+C_\pm(\alpha,\beta,N)=\max\biggl(|b|,
+\max_{y\in S_\pm}\biggl|\frac{ay\pm b}{(y\mp c)^2+b^2}\biggr|\biggr).
+\]
+\end{enumerate}
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Let
+\[
+f_\pm(y)=\frac{ay\pm b}{(y\mp c)^2+b^2},
+\]
+and observe that $f_\pm(0)=B$ because $b^2+c^2=1$, and that $f_\pm(y)\to0$ 
+as~$y\to\infty$.  If $a=0$~and $c\ge0$, then $|f_+(y)|\le|f_+(c)|=|b|^{-1}$
+for~$0\le y<\infty$, whereas $|f_-(y)|\le|f_-(0)|=|b|$.  If $a=0$~and $c<0$,
+then $|f_+(y)|\le|f_+(0)|=|b|$~and $|f_-(y)|\le|f_-(c)|=|b|^{-1}$ instead.
+
+It remains to deal with the case~$a\ne0$.  We see that $f_\pm'(y)=0$ if and 
+only if
+\[
+a[(y\mp c)^2+b^2]=2(ay\pm b)(y\mp c),
+\]
+which simplifies to give the quadratic equation~\eqref{eq: A B C quadratic}.
+The maximum value of~$|f_\pm(y)|$ must occur either at~$y=0$ or at an element 
+of~$S_\pm$.
+\end{proof}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
