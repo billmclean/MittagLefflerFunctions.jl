@@ -1,6 +1,10 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[margin=2cm]{geometry}
 \usepackage{amsmath,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{biblatex}
+\usepackage{cleveref}
+\bibliography{MLnotes}
 \title{Notes on the Mittag--Leffler function}
 \author{William McLean}
 \date{\today}
@@ -9,6 +13,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \DeclareMathOperator*{\res}{res}
+\newcommand{\arcosh}{\operatorname{arcosh}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
@@ -24,7 +29,9 @@ Hankel contour,
 \frac{1}{\Gamma(\beta+n\alpha)}=\frac{1}{2\pi i}\int_{-\infty}^{0^+}
     \frac{e^w\,dw}{w^{\beta+n\alpha}},
 \]
-and therefore, if $|z|<|w^\alpha|$ for all~$w$ on the contour, then
+where we take a branch cut along the negative real axis so that 
+$-\pi<\arg w<\pi$. Therefore, if $|z|<|w^\alpha|$ for all~$w$ on the contour, 
+then
 \[
 E_{\alpha,\beta}(z)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}\frac{e^w}{w^\beta}
     \sum_{n=0}^\infty(zw^{-\alpha})^n\,dw
@@ -36,6 +43,176 @@ and so
 E_{\alpha,\beta}(z)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}
     \frac{e^w\,dw}{w^\beta-zw^{\beta-\alpha}}.
 \end{equation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quadrature approximations}
+Assume $t>0$ and $0<\alpha<1$.  Then
+\[
+E_{\alpha,\beta}(-t^\alpha)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w\,dw}{w^{\beta-\alpha}(w^\alpha+t^\alpha)},
+\]
+and $w^\alpha+t^\alpha\ne0$ since $|\arg w^\alpha|=\alpha|\arg w|<\alpha\pi$.  
+Making the substitution~$w=tz$, we obtain
+\[
+E_{\alpha,\beta}(-t^\alpha)=\frac{t^{1-\beta}}{2\pi i}\int_{-\infty}^{0^+}
+    e^{tz}F_-(z)\,dz
+\quad\text{where}\quad F_-(z)=\frac{1}{z^{\beta-\alpha}(z^\alpha+1)}.
+\]
+For positive arguments of the Mittag--Leffler functions, the representation
+\[
+E_{\alpha,\beta}(t^\alpha)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w\,dw}{w^{\beta-\alpha}(w^\alpha-t^\alpha)}
+\]
+is valid only if the Hankel contour passes to the right of the pole 
+at~$w=t$.  Considering the residue
+\[
+\res_{w\to t}\frac{1}{w^\alpha-t^\alpha}
+    =\lim_{w\to t}\frac{w-t}{w^\alpha-t^\alpha}
+    =\frac{1}{\alpha t^{\alpha-1}},
+\]
+we have
+\[
+E_{\alpha,\beta}(t^\alpha)=\alpha^{-1}t^{1-\beta}e^t
+    +\frac{1}{2\pi i}\int_{-\infty}^{0^+}\frac{e^w}{w^{\beta-\alpha}}
+    \biggl(\frac{1}{w^\alpha-t^\alpha}
+    -\frac{1}{\alpha t^{\alpha-1}(w-t)}\biggr)\,dw,
+\]
+where the integrand is now analytic in the cut plane.  We again make the 
+substitution~$w=tz$, obtaining
+\[
+E_{\alpha,\beta}(t^\alpha)=t^{1-\beta}\biggl(\alpha^{-1}e^t
+    +\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^{tz}F_+(z)\,dz\biggr),
+\]
+where
+\[
+F_+(z)=\frac{1}{z^{\beta-\alpha}}\biggl(\frac{1}{z^\alpha-1}
+    -\frac{1}{\alpha(z-1)}\biggr).
+\]
+
+Thus, we are led to the problem of evaluating the Bromwich integral
+\[
+I(t)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^{tz}F(z)\,dz,
+\]
+for $F(z)$ analytic in the cut plane. Following Weideman and 
+Trefethen~\cite{WeidemanTrefethen2007} we use the Hankel contour parameterised 
+by
+\[
+z(u)=\mu\bigl(1+\sin(iu-\phi)\bigr)\quad\text{for $-\infty<u<\infty$,}
+\]
+with $\mu>0$ and $0<\phi<\pi/2$, to express~$I$ as an integral on the real line,
+\[
+I(t)=\frac{1}{2\pi i}\int_{-\infty}^\infty e^{tz(u)}F\bigl(z(u)\bigr)z'(u)\,du.
+\]
+Since
+\begin{align*}
+\Re z&=\mu(1-\cosh u\,\sin\phi),\\
+\Im z&=\mu\sinh u\,\cos\phi,
+\end{align*}
+we have
+\[
+\biggl(\frac{\Re z-1}{\mu\sin\phi}\biggr)^2
+    -\biggl(\frac{\Im z}{\mu\cos\phi}\biggr)^2=1,
+\]
+showing that the contour is the left branch of an hyperbola with asymptotes
+\[
+\Im z=\pm(\Re z-1)\tan\phi.
+\]
+For a step size~$h>0$, let
+\[
+u_n=nh,\qquad z_n=z(u_n),\qquad z'_n=z'(u_n)
+\]
+and define the series approximation
+\[
+I_h(t)=\frac{h}{2\pi i}\sum_{n=-\infty}^\infty e^{tz_n}F(z_n)z'_n.
+\]
+For a fixed~$v$ with $0<\phi+v<\pi/2$, we see that
+$z(u+iv)=\mu\bigl[1+\sin(iu-(\phi+v)\bigr)\bigr]$ parameterises the left branch 
+of an hyperbola with asymptotes
+\[
+\Im z=\pm(\Re z-1)\tan(\phi+v).
+\]
+Putting
+\[
+M(t,v)=\int_{-\infty}^\infty\bigl|\exp\bigl(tz(u+iv)\bigr)
+    F\bigl(z(u+iv)\bigr)z'(u+iv)\bigr|\,du
+    \quad\text{for $-\phi<v<\frac{\pi}{2}$,}
+\]
+we have the error bound~\cite[Theorem~2.1]{WeidemanTrefethen2007}
+\[
+|I_h(t)-I(t)|\le\frac{M(t,r)}{\exp(2\pi r/h)-1}
+    +\frac{M(t,-s)}{\exp(2\pi s/h)-1}
+\]
+for $0<s<\phi$ and $0<r<\pi/2-\phi$.  For the truncated sum,
+\[
+I_{h,N}(t)=\frac{h}{2\pi i}\sum_{n=-N}^N e^{tz_n}F(z_n)z'_n,
+\]
+we have an additional truncation error
+\[
+T_{h,N}=\sum_{n=N+1}^\infty\bigl(e^{tz_n}F(z_n)z'_n
+    +e^{tz_{-n}}F(z_{-n})z'_{-n}\bigr).
+\]
+Choosing the largest possible values $s=\phi$~and $r=\pi/2-\phi$, the three
+error terms are of order $\exp\bigl(-(\pi^2-2\pi\phi)/h\bigr)$,
+$\exp(\mu t-2\pi\phi/h)$ and $\exp\bigl(\mu t(1-\cosh(Nh)\sin\phi)\bigr)$.
+To balance these quantities, we seek to choose the parameters so that
+\cite[(4.2)]{WeidemanTrefethen2007}
+\[
+-\frac{\pi^2-2\pi\phi}{h}=\mu t-\frac{2\pi\phi}{h}
+    =\mu t\bigl(1-\cosh(Nh)\sin\phi\bigr).
+\]
+The left-hand equation implies that
+\[
+\mu t=\frac{4\pi\phi-\pi^2}{h},
+\]
+which allows us to eliminate $\mu t$ in the right-hand equation, to obtain
+\[
+\cosh(Nh)=\frac{2\pi\phi}{(4\phi-\pi)\pi\sin\phi}.
+\]
+We therefore define
+\[
+A(\phi)=\arcosh\biggl(\frac{2\pi\phi}{(4\phi-\pi)\pi\sin\phi}\biggr)
+\quad\text{for $\frac{\pi}{4}<\phi<\frac{\pi}{2}$,}
+\]
+and set
+\[
+h=\frac{A(\phi)}{N}\quad\text{and}\quad
+\mu=\frac{4\pi\phi-\pi^2}{A(\phi)}\,\frac{N}{t},
+\]
+so that the error~$I_{h,N}(t)-I(t)$ is order~$e^{-B(\alpha)N}$ for
+\begin{equation}\label{eq: B function}
+B(\phi)=\frac{\pi^2-2\pi\phi}{A(\phi)}.
+\end{equation}
+\Cref{fig: B plot} shows a plot of~$B(\phi)$, and we find using a standard 
+optimization package that the maximum value occurs at
+\[
+\phi_\star=1.172104\quad\text{with}\quad B(\phi_\star)=2.315654.
+\]
+The corresponding values for the other parameters are
+\[
+h_\star=\frac{1.081792}{N}\quad\text{and}\quad
+\mu_\star=4.492075\,\frac{N}{t}.
+\]
+Since $e^{B(\phi_\star)}=10.131547$ we expect to gain about an extra decimal
+digit of accuracy each time we increase $N$ by~$1$.
+
+
+
+\begin{figure}
+\caption{Plot of the function~\eqref{eq: B function} showing the 
+maximum at~$\phi_\star$.}\label{fig: B plot}
+\begin{center}
+\includegraphics[scale=0.75]{Bplot.pdf}
+\end{center}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -207,5 +384,6 @@ of~$S_\pm$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\printbibliography
 \end{document}
 
