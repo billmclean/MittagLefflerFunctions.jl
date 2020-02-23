@@ -1,6 +1,11 @@
 module MittagLefflerFunctions
 
 import SpecialFunctions
+import GaussQuadrature
+using OffsetArrays
+using ArgCheck
+
+export chebyshev_coefs!, chebyshev_sum
 
 Γ = SpecialFunctions.gamma
 
