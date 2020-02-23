@@ -14,15 +14,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \DeclareMathOperator*{\res}{res}
 \newcommand{\arcosh}{\operatorname{arcosh}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % %
 \begin{document}
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 The two-argument, Mittag--Leffler function is defined by the power series
-\[
+\begin{equation}\label{eq: E alpha beta def}
 E_{\alpha,\beta}(z)=\sum_{n=0}^\infty\frac{z^n}{\Gamma(\beta+n\alpha)}
 \quad\text{for $z\in\mathbb{C}$, $\alpha>0$, $\beta>0$.}
-\]
+\end{equation}
 The reciprocal of the Gamma function may be written as an integral along a
 Hankel contour,
 \[
@@ -203,18 +204,6 @@ maximum at~$\phi_\star$.}\label{fig: B plot}
 \includegraphics[scale=0.75]{Bplot.pdf}
 \end{center}
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Asymptotic expansion}
 Since
@@ -255,7 +244,7 @@ E_{\alpha,\beta}(z)=R_N(z)+\frac{1}{\pi}\sum_{n=0}^N
 \]
 Also,
 \[
-R_n(z)=\frac{z^{-1-N}}{2\pi i}\int_{-\infty}^{0^+}
+R_N(z)=\frac{z^{-1-N}}{2\pi i}\int_{-\infty}^{0^+}
     \frac{e^w w^{(N+2)\alpha-\beta}}{w^\alpha-z}\,dw
 \]
 If $z=x>0$, then this integrand has a pole at~$w=x^{1/\alpha}$ (in addition to
@@ -296,6 +285,12 @@ where
 \]
 
 If $z=-x$ for~$x>0$, then we obtain in the same way
+\begin{equation}\label{eq: E minus asymptotic}
+E_{\alpha,\beta}(-x)=\frac{1}{\pi}\sum_{n=0}^N(-1)^{n+1}
+    \sin\pi[(n+1)\alpha-\beta]\,\Gamma\bigl((n+1)\alpha-\beta+1\bigr)x^{-1-n}
+    +R_N(-x).
+\end{equation}
+with
 \[
 R_N(-x)=(-1)^{N+1}\,\frac{x^{-1-N}}{\pi}\int_0^\infty 
     e^{-r}r^{(N+2)\alpha-\beta}
@@ -381,6 +376,42 @@ which simplifies to give the quadratic equation~\eqref{eq: A B C quadratic}.
 The maximum value of~$|f_\pm(y)|$ must occur either at~$y=0$ or at an element 
 of~$S_\pm$.
 \end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Chebyshev expansion}
+Consider the substitution
+\[
+y=\frac{x-1}{x+1}\quad\text{for $0\le x<\infty$.}
+\]
+The function~$x\mapsto y$ maps the half-line~$[0,\infty)$ onto~$[-1,1)$, and 
+the inverse function~$y\mapsto x$ is given by
+\[
+x=\frac{1+y}{1-y}\quad\text{for $-1\le y<1$.}
+\]
+We define a function~$g$ by requiring that
+\[
+E_{\alpha,\beta}(-x)=1+xg(y).
+\]
+On the one hand, the power series~\eqref{eq: E alpha beta def} implies that
+\[
+g(y)=\frac{1}{x}\sum_{n=1}^\infty\frac{(-x)^n}{\Gamma(\beta+n\alpha)}
+    =\sum_{n=1}^\infty\frac{(-1)^n}{\Gamma(\beta+n\alpha)}\,\biggl(
+    \frac{1+y}{1-y}\biggr)^{n-1}\quad\text{for $-1\le y<1$,}
+\]
+and on the other hand, the asymptotic expansion~\eqref{eq: E minus asymptotic}
+implies that
+\begin{align*}
+g(y)&=\frac{1}{x}\biggl(-1+\frac{1}{\pi}\,\sin\pi(\alpha-\beta)\,
+    \Gamma(1+\alpha-\beta)x^{-1}+O(x^{-2})\biggr)&
+&\text{as $x\to\infty$,}\\
+    &=\frac{1-y}{1+y}\biggl(-1+\frac{1}{\pi}\,\sin\pi(\alpha-\beta)\,
+\Gamma(1+\alpha-\beta)\frac{1-y}{1+y}+O\bigl((1-y)^2\bigr)\biggr)&
+&\text{as $y\to1$.}
+\end{align*}
+In particular, $g(-1)=-1/\Gamma(\beta+\alpha)$ and $g(1)=0$.
+
+
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
