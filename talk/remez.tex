@@ -1,0 +1,104 @@
+\begin{frame}{Rational Approximation}
+The substitution
+\[
+y=\frac{x-1}{x+1}
+\]
+defines a mapping $x\mapsto y$ from the half-line~$[0,\infty)$ onto the 
+interval~$[-1,1)$.  Define $g_\alpha:[-1,1]\to\mathbb{R}$ by
+\[
+g_\alpha(y)=E_\alpha(-x)\quad\text{noting that}\quad x=\frac{1+y}{1-y}.
+\]
+We want to compute a minimax polynomial approximation to~$g_\alpha$, subject to 
+the constraints
+\[
+g_\alpha(-1)=E_\alpha(0)=1\quad\text{and}\quad g_\alpha(1)=E_\alpha(-\infty)=0.
+\]
+\end{frame}
+\begin{frame}
+\begin{center}
+\includegraphics[scale=0.75]{g_plots-crop.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}{Remez algorithm}
+Aim: find $p\in\mathbb{P}_r$ satisfying
+\[
+\max_{-1\le y\le 1}|g(y)-p(y)|=\min_q\max_{-1\le y\le 1},
+    |g(y)-q(y)|.
+\]
+where the minimum is over all $q\in\mathbb{P}_r$ satisfying
+\[
+q(-1)=g(-1)\quad\text{and}\quad q(1)=g(1).
+\]
+
+Start from the points
+\[
+-1=y_0<y_1<y_2<\cdots<y_r<y_{r+1}=1
+\]
+given by
+\[
+y_r=cos\frac{\pi(r+1-j)}{r+1},
+\]
+which are the extrema of the Chebyshev polynomial~$T_{r+1}$.
+\end{frame}
+\begin{frame}
+Find the unique polynomial $p_1\in\mathbb{P}_r$ satisfying
+\[
+p_1(y_j)=g(y_j)\quad\text{for $0\le j\le r$,}
+\]
+and the unique $p_2\in\mathbb{P}_r$ satisfying
+\[
+p_2(y_0)=0\quad\text{with}\quad p_2(y_j)=(-1)^j\quad\text{for $1\le j\le r$.}
+\]
+Then define $p\in\mathbb{P}_r$ by
+\[
+p(y)=p_1(y)-Ep_2(y)\quad\text{where}\quad 
+E=\frac{p_1(y_{r+1})-g(y_{r+1})}{p_2(y_{r+1})},
+\]
+so that $p(y_0)=g(y_0)$, 
+\[
+p(y_j)=g(y_j)+(-1)^jE\quad\text{for $1\le j\le r$,}
+\]
+and $p(y_{r+1})=g(y_{r+1})$.
+\end{frame}
+\begin{frame}{Starting (Chebyshev) points}
+\begin{center}
+\includegraphics[scale=0.6]{remez1.pdf}
+\end{center}
+\end{frame}
+\begin{frame}{Extrema of the error}
+Choose new points
+\[
+-1=y_0'<y_1'<y_2'<\cdots<y_r'<y_{r+1}'=1
+\]
+as follows: 
+\[
+(-1)^{j+k}[g(y_j')-p(y_j')]=\min_{y_{j-1}\le y\le y_{j+1}}
+    (-1)^{j+k}[g(y)-p(y)]
+\]
+where $k=1$ if $E>0$, and $k=0$ if $E<0$.
+
+Put $a_j=g(y_j')-p(y_j')$ and let
+\[
+a_{\min}=\min_{1\le j\le r}|a_j|
+\quad\text{and}\quad
+a_{\max}=\max_{1\le j\le r}|a_j|.
+\]
+
+Iterate this process until $a_{\max}-a_{\min}$ is less than a specified 
+tolerance.  Then the final $p(y)$ is the minimax approximation (because it has 
+the equi-oscillation property).
+\end{frame}
+\begin{frame}{Updated points}
+\begin{center}
+\includegraphics[scale=0.6]{remez2.pdf}
+\end{center}
+\end{frame}
+\begin{frame}{Minimax error}
+\[
+\max_{-1\le y\le 1}|g_{1/2}(y)-p(y)|\approx (0.006006)(0.34657)^r
+\]
+\begin{center}
+\includegraphics[scale=0.6]{remez3-crop.pdf}
+\end{center}
+\end{frame}
