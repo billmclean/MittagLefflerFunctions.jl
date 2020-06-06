@@ -4,6 +4,7 @@
 \newtheorem{example}{Example}
 \usepackage{graphicx}
 \usepackage[backend=biber]{biblatex}
+\usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{kbordermatrix}
 \bibliography{MLnotes}
@@ -280,12 +281,12 @@ w=x^{1/\alpha}(1+\epsilon)\quad\text{where}\quad
 \epsilon=\frac{w-x^{1/\alpha}}{x^{1/\alpha}},
 \]
 and define
-\[
+\begin{equation}\label{eq: psi 1 2}
 \psi_{1,\alpha}(\epsilon)=\frac{(1+\epsilon)^\alpha-1}{\epsilon}
 \quad\text{and}\quad
 \psi_{2,\alpha}(\epsilon)
 =\frac{(1+\epsilon)^\alpha-(1+\alpha\epsilon)}{\epsilon^2}
-\]
+\end{equation}
 so that
 \[
 (1+\epsilon)^\alpha=1+\epsilon\psi_{1,\alpha}(\epsilon)=1+\alpha\epsilon
@@ -330,7 +331,7 @@ The numerator equals
 \[
 \epsilon x^{1/\alpha}-\alpha^{-1}x^{1/\alpha}\bigl[\alpha\epsilon
     +\epsilon^2\psi_{2,\alpha}(\epsilon)\bigr]
-    =-\frac{x^{1/\alpha}}{\alpha}\,\psi_{2,\alpha}(\epsilon)
+    =-\frac{x^{1/\alpha}}{\alpha}\,\epsilon^2\psi_{2,\alpha}(\epsilon)
 \]
 and the denominator equals
 \[
@@ -365,11 +366,11 @@ H(w,x)&=\alpha^{-1}x^{-\beta/\alpha}\psi_{1,\alpha-\beta}(\epsilon)
 {\psi_{1,\alpha}(\epsilon)}\biggr),
 \end{align*}
 and in particular, since
-\[
+\begin{equation}\label{eq: psi zero}
 \psi_{1,\alpha}(0)=c_1(\alpha)=\alpha
 \quad\text{and}\quad
 \psi_{2,\alpha}(0)=c_2(\alpha)=\frac{\alpha(\alpha-1)}{2},
-\]
+\end{equation}
 we see that
 \[
 H(x^{1/\alpha},x)=\frac{x^{-\beta/\alpha}}{\alpha}\biggl((\alpha-\beta)
@@ -682,20 +683,24 @@ G_\pm(\gamma_\pm,x)=\lim_{x\to\gamma_\pm}G_\pm(w,x)
 \]
 Putting
 \[
-H_\pm(w,x)=\frac{G_\pm(w,x)-G_\pm(\gamma_\pm,x)}{w-\gamma_\pm}
-    =\frac{1}{w^\alpha+x}-\frac{\gamma_\pm^{1-\alpha}}{\alpha(w-\gamma_\pm)},
+H_\pm(w,x)=
+\frac{w^{\alpha-\beta}G_\pm(w,x)-\gamma_\pm^{\alpha-\beta}G_\pm(\gamma_\pm,x)}% 
+{w-\gamma_\pm}=\frac{w^{\alpha-\beta}}{w^\alpha+x}
+-\frac{\gamma_\pm^{1-\beta}}{\alpha(w-\gamma_\pm) } ,
+\qquad w\ne\gamma_\pm,
 \]
 we have
 \[
-\frac{G_\pm(w,x)}{w-\gamma_+}=\frac{\gamma_\pm^{1-\alpha}/\alpha}{w-\gamma_\pm}
+w^{\alpha-\beta}\,\frac{G_\pm(w,x)}{w-\gamma_+}
+    =\frac{\gamma_\pm^{1-\beta}/\alpha}{w-\gamma_\pm }
     +H_\pm(w,x)
 \]
 so
 \[
-F(w,x)=\frac{w^{\alpha-\beta}}{2}\biggl(
-     \frac{\gamma_+^{1-\alpha}/\alpha}{w-\gamma_+}
-    +\frac{\gamma_-^{1-\alpha}/\alpha}{w-\gamma_-}\biggr)
-    +\frac{w^{\alpha-\beta}}{2}\bigl(H_+(w,x)+H_-(w,x)\bigr)
+F(w,x)=\frac{1}{2}\biggl(
+     \frac{\gamma_+^{1-\beta}/\alpha}{w-\gamma_+}
+    +\frac{\gamma_-^{1-\beta}/\alpha}{w-\gamma_-}\biggr)
+    +\frac{1}{2}\bigl(H_+(w,x)+H_-(w,x)\bigr)
 \]
 and hence
 \begin{align*}
@@ -703,7 +708,7 @@ E_{\alpha,\beta}(-x)&=\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^wF(w,x)\,dw\\
 &=\frac{1}{2\alpha}\,\bigl(\gamma_+^{1-\beta}e^{\gamma_+}
     +\gamma_-^{1-\beta}e^{\gamma_-}\bigr)
      +\frac{1}{2\pi i}\int_{-\infty}^{0^+}
-    e^w\frac{w^{\alpha-\beta}}{2} \bigl(H_+(w,x)+H_-(w,x)\bigr)\,dw.
+    \frac{e^w}{2} \bigl(H_+(w,x)+H_-(w,x)\bigr)\,dw.
 \end{align*}
 Since
 \begin{align*}
@@ -720,6 +725,74 @@ it follows that
     =\frac{x^{(1-\beta)/\alpha}}{\alpha}\,\exp(x^{1/\alpha}\cos\pi/\alpha)
     \cos\bigl(\pi(1-\beta)/\alpha+x^{1/\alpha}\sin\pi/\alpha\bigr).
 \]
+To evaluate $H_\pm(w,x)$ for $w$ near~$\gamma_\pm$, we put
+\[
+w=\gamma_\pm(1+\epsilon_\pm)\quad\text{where}\quad
+\epsilon_\pm=\frac{w-\gamma_\pm}{\gamma_\pm}.
+\]
+so that, using the functions~\eqref{eq: psi 1 2} and recalling that 
+$\gamma_\pm^\alpha=-x$,
+\begin{align*}
+w^\alpha+x&=-x(1+\epsilon_\pm)^\alpha+x=-x[(1+\epsilon_\pm)^\alpha-1]
+    =-x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)\\
+    &=-x[\alpha\epsilon_\pm+\epsilon_\pm^2\psi_{2,\alpha}(\epsilon_\pm)].
+\end{align*}
+Write
+\[
+H_\pm(w,x)=w^{\alpha-\beta}\,\frac{G_\pm(w,x)-G_\pm(\gamma_\pm,x)}{w-\gamma_\pm}
+    +\frac{w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}}{w-\gamma_\pm}\,
+    G_\pm(\gamma_\pm,x)
+\]
+and observe that
+\[
+\frac{G_\pm(w,x)-G_\pm(\gamma_\pm,x)}{w-\gamma_\pm}=\frac{1}{w^\alpha+x}
+    -\frac{\alpha^{-1}\gamma_\pm^{1-\alpha}}{w-\gamma_\pm}
+    =\frac{(w-\gamma_\pm)-\alpha^{-1}\gamma_\pm^{1-\alpha}(w^\alpha+x)}%
+{(w^\alpha+x)(w-\gamma_\pm)}.
+\]
+The numerator on the right equals
+\[
+\epsilon_\pm\gamma_\pm+\alpha^{-1}\gamma_\pm^{1-\alpha}x
+    \bigl[\alpha\epsilon_\pm+\epsilon_\pm^2\psi_{2,\alpha}(\epsilon_\pm)\bigr]
+    =-\frac{\gamma_\pm}{\alpha}\,\epsilon_\pm^2\psi_{2,\alpha}(\epsilon_\pm)
+\]
+and the denominator equals
+\[
+\bigl[-x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)\bigr]\,\epsilon_\pm\gamma_\pm
+    =-\gamma_\pm x\epsilon_\pm^2\psi_{1,\alpha}(\epsilon_\pm),
+\]
+so
+\[
+\frac{G_\pm(w,x)-G_\pm(\gamma_\pm,x)}{w-\gamma_\pm}
+=\frac{\psi_{2,\alpha}(\epsilon_\pm)}{\alpha x\psi_{1,\alpha}(\epsilon_\pm)}.
+\]
+Similarly,
+\[
+w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}
+    =\gamma_\pm^{\alpha-\beta}\bigl[(1+\epsilon_\pm)^{\alpha-\beta}-1]
+    =\gamma_\pm^{\alpha-\beta}\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
+\]
+and hence
+\[
+\frac{w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}}{w-\gamma_\pm}
+    =\gamma_\pm^{\alpha-\beta-1}\psi_{1,\alpha}(\epsilon_\pm).
+\]
+Thus,
+\begin{align*}
+H_\pm(w,x)&=w^{\alpha-\beta}
+\frac{\psi_{2,\alpha}(\epsilon_\pm)}{\alpha x\psi_{1,\alpha}(\epsilon_\pm)}
+    +\alpha^{-1}\gamma_\pm^{-\beta}\psi_{1,\alpha}(\epsilon_\pm)\\
+    &=\frac{\gamma_\pm^{-\beta}}{\alpha}\biggl(\psi_{1,\alpha}(\epsilon_\pm)
+    -(1+\epsilon_\pm)^{\alpha-\beta}\,
+    \frac{\psi_{2,\alpha}(\epsilon_\pm)}{\psi_{1,\alpha}(\epsilon_\pm)}\biggr),
+\end{align*}
+and in particular, by~\eqref{eq: psi zero},
+
+
+
+
+
+
 Also, recalling that $\gamma_\pm^\alpha=-x$,
 \begin{align*}
 H_\pm(\gamma_\pm,x)&=\lim_{w\to\gamma_\pm}
@@ -1030,8 +1103,9 @@ p_k-\sum_{j=k+1}^r b_{j-k}q_j&=0&&\text{for $1\le k\le r-1$.}
 \section{Using the SVD}
 Instead of requiring $q_0=1$, we can instead adapt the approach of Gonnet et 
 al.~\cite{GonnetEtAl2013} and use the SVD to solve the resulting underdetermined
-$2r\times(2r+1)$ linear system.  (We must still have $p_r=0$.) If $m\ge r+1$ 
-then $n=2r+1-m\le r$ so
+$2r\times(2r+1)$ linear system.  (We must still have $p_r=0$.) 
+
+If $m\ge r+1$, then $n=2r+1-m\le r$ so
 \[
 \begin{aligned}
 p_k-\sum_{j=0}^k a_{k-j}q_j&=0&&\text{for $0\le k\le r-1$,}\\
@@ -1056,25 +1130,24 @@ A_{31}=[O_{(n-1)\times(r-n)}\quad I_{(n-1)\times(n-1)}],
 with
 \begin{gather*}
 A_{12}=\kbordermatrix{
-      &1       &2       &\cdots&r     &r+1\\     
+      &1       &2       &\cdots&r     &r+1\\
 1     &-a_0    &0       &\cdots&0     &0\\
 2     &-a_1    &-a_0    &\cdots&0     &0\\
 \vdots&\vdots  &\vdots  &\ddots&\vdots&\vdots\\
-r     &-a_{r-1}&-a_{r-2}&\cdots&-a_0&0
+r     &-a_{r-1}&-a_{r-2}&\cdots&-a_0  &0
 },\\
 A_{22}=\kbordermatrix{
-      &1       &2       &\cdots&r         &r+1\\
-1     &-a_r    &-a_{r-1}&\cdots&-a_1      &-a_0\\
-2     &-a_{r+1}&-a_r    &\cdots&-a_2      &-a_1\\
-\vdots&\vdots  &\vdots  &\ddots&\vdots    &\vdots\\
-m-r   &-a_{m-1}&-a_{m-2}&\cdots&-a_{m-r-2}&-a_{m-r-1}
-}\\
+      &1       &\cdots&r+1-n &\cdots&m-n      &\cdots&r+1\\
+1     &-a_r    &\cdots&-a_n  &\cdots&a_{m-r-1}&\cdots&-a_0\\
+\vdots&\vdots  &\ddots&\vdots&\ddots&\vdots   &\ddots&\vdots\\
+m-r   &-a_{m-1}&\cdots&-a_r  &\cdots&-a_n     &\cdots&-a_{m-r-1}
+},\\
 A_{32}=\kbordermatrix{
-      &1     &\cdots&r-n+2 &r-n+3 &\cdots&r+1\\
-1     &0     &\cdots&-b_1  &-b_2  &\cdots&-b_{n-1}\\
-2     &0     &\cdots&0     &-b_1  &\cdots&-b_{n-2}\\
-\vdots&\vdots&\ddots&\vdots&\vdots&\ddots&\vdots\\
-n-1   &0     &\cdots&0     &0     &\cdots&-b_1
+      &1     &\cdots&r-n+1 &r-n+2 &r-n+3 &\cdots&r+1\\
+1     &0     &\cdots&0     &-b_1  &-b_2  &\cdots&-b_{n-1}\\
+2     &0     &\cdots&0     &0     &-b_1  &\cdots&-b_{n-2}\\
+\vdots&\vdots&\ddots&\vdots&\vdots&\vdots&\ddots&\vdots\\
+n-1   &0     &\cdots&0     &0     &0     &\cdots&-b_1
 }.
 \end{gather*}
 We compute the full SVD, $A=USV^\top$, and since the final column of the 
@@ -1097,6 +1170,45 @@ and
 q_k=\mu y_{r+1+k}\quad\text{for $0\le k\le r$.}
 \]
 In particular, choosing $\mu=1/y_{r+1}$ ensures $q_0=1$.
+
+If $m\le r$ then $n=2r+1-m\ge r+1$ so
+\[
+\begin{aligned}
+p_k-\sum_{j=0}^k a_{k-j}q_j&=0&&\text{for $0\le k\le m-1$,}\\
+-\sum_{j=0}^r b_{j-k}q_j&=0&&\text{for $-(r-m)\le k\le-1$,}\\
+p_k-\sum_{j=k+1}^r b_{j-k}q_j&=0&&\text{for $0\le k\le r-1$,} 
+\end{aligned}
+\]
+and hence the matrix blocks are now
+\[
+A_{11}=[I_{m\times m}\quad O_{m\times(r-m)}],\qquad 
+A_{21}=O_{(n-r-1)\times r},\qquad
+A_{31}=I_{r\times r}
+\]
+with
+\begin{gather*}
+A_{12}=\kbordermatrix{
+      &1       &2       &\cdots&m     &m+1   &\cdots&r+1\\
+1     &-a_0    &0       &\cdots&0     &0     &\cdots&0\\
+2     &-a_1    &-a_0    &\cdots&0     &0     &\cdots&0\\
+\vdots&\vdots  &\vdots  &\ddots&\vdots&\vdots&\ddots&\vdots\\
+m     &-a_{m-1}&-a_{m-2}&\cdots&-a_0  &0     &\cdots&0
+},\\
+A_{22}=\kbordermatrix{
+      &1       &2         &\cdots&r+1\\
+1     &-b_{r-m}&-b_{r-m+1}&\cdots&-b_{2r-m}\\
+\vdots&\vdots  &\vdots    &\ddots&\vdots\\
+r-m+1 &-b_1    &-b_2      &\cdots&-b_{r+1}\\
+r-m   &-b_2    &-b_3      &\cdots&-b_{r+2}
+}\\
+A_{32}=\kbordermatrix{
+      &1     &2     &3     &\cdots&r+1\\
+1     &0     &-b_1  &-b_2  &\cdots&-b_r\\
+2     &0     &0     &-b_1  &\cdots&-b_{r-1}\\
+\vdots&\vdots&\vdots&\vdots&\ddots&\vdots\\
+r     &0     &0     &0     &\cdots&-b_0
+}.
+\end{gather*}
 
 
 
