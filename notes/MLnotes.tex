@@ -176,13 +176,13 @@ h=\frac{a(\phi)}{N}\quad\text{and}\quad \mu=b(\phi)\,N,
 \]
 so that the error~$Q_{h,N}(x)-E_{\alpha,\beta}(-x)$ is order~$e^{-C(\phi)N}$ 
 for
-\begin{equation}\label{eq: C function}
-C(\phi)=\frac{\pi^2-2\pi\phi}{A(\phi)}.
+\begin{equation}\label{eq: c function}
+c(\phi)=\frac{\pi^2-2\pi\phi}{A(\phi)}.
 \end{equation}
-\Cref{fig: C plot} shows a plot of~$C(\phi)$, and we find using a standard 
+\Cref{fig: c plot} shows a plot of~$c(\phi)$, and we find using a standard 
 optimization package that the maximum value occurs at
 \[
-\phi=\phi_\star=1.172104\quad\text{with}\quad C(\phi_\star)=2.315654.
+\phi=\phi_\star=1.172104\quad\text{with}\quad c(\phi_\star)=2.315654.
 \]
 Furthermore,
 \[
@@ -194,12 +194,12 @@ leading to the optimal values
 h=h_\star=\frac{a(\phi_\star)}{N}\quad\text{and}\quad
 \mu=\mu_\star=b(\phi_\star)\,N.
 \]
-Since $e^{B(\phi_\star)}=10.131547$ we expect to gain about an extra decimal
+Since $e^{c(\phi_\star)}=10.131547$ we expect to gain about an extra decimal
 digit of accuracy each time we increase $N$ by~$1$.
 
 \begin{figure}
-\caption{Plot of $C(\phi)$ from~\eqref{eq: C function} showing the 
-maximum at~$\phi_\star$.}\label{fig: C plot}
+\caption{Plot of $c(\phi)$ from~\eqref{eq: c function} showing the 
+maximum at~$\phi_\star$.}\label{fig: c plot}
 \begin{center}
 \includegraphics[scale=0.75]{Bplot.pdf}
 \end{center}
@@ -207,20 +207,20 @@ maximum at~$\phi_\star$.}\label{fig: C plot}
 
 Notice that
 \[
-\frac{hw'(u)}{2\pi i}=\frac{h\mu}{2\pi}\,\cos(iu-\phi)
-    =\frac{a(\phi_\star)b(\phi_\star)}{2\pi}\,\cos(iu-\phi)
+\frac{hw'(u)}{2\pi i}=\frac{h\mu}{2\pi}\,\cos(iu-\phi_\star)
+    =\frac{a(\phi_\star)b(\phi_\star)}{2\pi}\,\cos(iu-\phi_\star)
 \]
 so we can re-write the sum~\eqref{eq: Q_hN} as
 \[
 Q_{hN}(x)=\frac{a(\phi_\star)b(\phi_\star)}{2\pi}\sum_{n=-N}^N
-    e^{w_n}F(w_n,x)\cos(iu_n-\phi).
+    e^{w_n}F(w_n,x)\cos(iu_n-\phi_\star).
 \]
 Also, $u_{-n}=-u_n$, $w(-u)=\overline{w(u)}$~and 
 $F(\bar w,x)=\overline{F(w,x)}$, so the terms of the sum occur in complex 
 conjugate pairs,
 \[
-e^{w_{-n}}F(w_{-n},x)\cos(iu_{-n}-\phi)
-    =\overline{e^{w_n}F(w_n,x)\cos(iu_n-\phi)}.
+e^{w_{-n}}F(w_{-n},x)\cos(iu_{-n}-\phi_\star)
+    =\overline{e^{w_n}F(w_n,x)\cos(iu_n-\phi_\star)}.
 \]
 Thus,
 \[
@@ -228,8 +228,17 @@ Q_{h,N}(x)=\frac{a(\phi_\star)b(\phi_\star)}{\pi}\biggl(
     \tfrac12e^{w_0}F(w_0,x)\cos\phi
     +\sum_{n=1}^N\Re\bigl(e^{w_n}F(w_n,x)\cos(iu_n-\phi)\bigr)\biggr),
 \]
-but note that $w_n$~and $u_n$ depend on~$N$ through $h$~and $\mu$.
-
+but note that $w_n$~and $u_n$ depend on~$N$ through $h$~and $\mu$.  By letting
+\[
+A=\frac{a(\phi_\star)b(\phi_\star)}{\pi},\qquad
+C_0=\tfrac12e^{w_0}\cos\phi,\qquad
+C_n=e^{w_n}\cos(iu_n-\phi_\star)
+\]
+we can write the sum as
+\[
+Q_{h,N}(x)=A\sum_{n=0}^N\Re\bigl(C_nF(w_n,x)\bigr)
+    =A\sum_{n=0}^N\Re\biggl(\frac{C_nw_n^{\alpha-\beta}}{x+w_n^\alpha}\biggr).
+\]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Quadrature approximation: positive real argument}
 We now consider
@@ -770,84 +779,28 @@ Similarly,
 \[
 w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}
     =\gamma_\pm^{\alpha-\beta}\bigl[(1+\epsilon_\pm)^{\alpha-\beta}-1]
-    =\gamma_\pm^{\alpha-\beta}\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
+    =\gamma_\pm^{\alpha-\beta}\epsilon_\pm\psi_{1,\alpha-\beta}(\epsilon_\pm)
 \]
 and hence
 \[
 \frac{w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}}{w-\gamma_\pm}
-    =\gamma_\pm^{\alpha-\beta-1}\psi_{1,\alpha}(\epsilon_\pm).
+    =\gamma_\pm^{\alpha-\beta-1}\psi_{1,\alpha-\beta}(\epsilon_\pm).
 \]
 Thus,
 \begin{align*}
 H_\pm(w,x)&=w^{\alpha-\beta}
 \frac{\psi_{2,\alpha}(\epsilon_\pm)}{\alpha x\psi_{1,\alpha}(\epsilon_\pm)}
-    +\alpha^{-1}\gamma_\pm^{-\beta}\psi_{1,\alpha}(\epsilon_\pm)\\
-    &=\frac{\gamma_\pm^{-\beta}}{\alpha}\biggl(\psi_{1,\alpha}(\epsilon_\pm)
+    +\alpha^{-1}\gamma_\pm^{-\beta}\psi_{1,\alpha-\beta}(\epsilon_\pm)\\
+&=\frac{\gamma_\pm^{-\beta}}{\alpha}\biggl(\psi_{1,\alpha-\beta}(\epsilon_\pm)
     -(1+\epsilon_\pm)^{\alpha-\beta}\,
     \frac{\psi_{2,\alpha}(\epsilon_\pm)}{\psi_{1,\alpha}(\epsilon_\pm)}\biggr),
 \end{align*}
 and in particular, by~\eqref{eq: psi zero},
-
-
-
-
-
-
-Also, recalling that $\gamma_\pm^\alpha=-x$,
-\begin{align*}
-H_\pm(\gamma_\pm,x)&=\lim_{w\to\gamma_\pm}
-\frac{\alpha(w-\gamma_\pm)-\gamma_\pm^{1-\alpha}(w^\alpha+x)}%
-{\alpha(w^\alpha+x)(w-\gamma_\pm)}\\
-    &=\lim_{w\to\gamma_\pm}\frac{1-\gamma_\pm^{1-\alpha}w^{\alpha-1}}%
-{\alpha w^{\alpha-1}(w-\gamma_\pm)+(w^\alpha+x)}\\
-&=\lim_{w\to\gamma_\pm}\frac{-(\alpha-1)\gamma_\pm^{1-\alpha}w^{\alpha-2}}%
-{\alpha(\alpha-1)w^{\alpha-2}(w-\gamma_\pm)+2\alpha w^{\alpha-1}}\\
-&=\frac{(1-\alpha)\gamma_\pm^{-1}}{2\alpha\gamma_\pm^{\alpha-1}}
-=\frac{1-\alpha}{2\alpha\gamma_\pm^\alpha}=\frac{-(1-\alpha)}{2\alpha x}.
-\end{align*}
-
-To evaluate $H_\pm(w,x)$ for $w$ near~$\gamma_\pm$, write
 \[
-w=\gamma_+(1+\epsilon_\pm)\quad\text{where}\quad
-\epsilon_\pm=\frac{w-\gamma_\pm}{\gamma_\pm}.
+H_\pm(\gamma_\pm,x)=\frac{\gamma_\pm^{-\beta}}{\alpha}\biggl((\alpha-\beta)
+    -\frac{\alpha-1}{2}\biggr)=\frac{1+\alpha-2\beta}{2\alpha\gamma_\pm^\beta}.
 \]
-In this way,
-\[
-w^\alpha+x=\gamma_\pm^\alpha(1+\epsilon_\pm)^\alpha+x
-    =-x[(1+\epsilon_\pm)^\alpha-1 ]
-    =-x\sum_{n=1}^\infty c_n\epsilon_\pm^n\quad\text{for $|\epsilon_\pm|<1$,}
-\]
-where
-\[
-c_n=\frac{\alpha}{1}\cdot\frac{\alpha-1}{2}\cdots\frac{\alpha-n+1}{n},
-\]
-or in other words,
-\[
-c_1=\alpha\qquad\text{and}\qquad c_n=-\frac{n-\alpha-1}{n}\,c_{n-1}
-\quad\text{for $n\ge2$.}
-\]
-Since
-\begin{align*}
-\alpha(w-\gamma_\pm)-\gamma_\pm^{1-\alpha}(w^\alpha+x)
-    &=\alpha\gamma_\pm\epsilon_\pm+\gamma_\pm^{1-\alpha}x
-        \biggl(c_1\epsilon_\pm+\sum_{n=2}^\infty c_n\epsilon_\pm^n\biggr)\\
-    &=\alpha\gamma_\pm\epsilon_\pm-\gamma_\pm
-        \biggl(\alpha\epsilon_\pm+\sum_{n=2}^\infty c_n\epsilon_\pm^n\biggr)\\
-    &=-\gamma_\pm\sum_{n=2}^\infty c_n\epsilon_\pm^n
-    =-\gamma_\pm\epsilon_\pm^2\sum_{n=0}^\infty c_{n+2}\epsilon_\pm^n
-\end{align*}
-and
-\[
-\alpha(w^\alpha+x)(w-\gamma_\pm)=-\alpha x\biggl(\sum_{n=1}^\infty 
-    c_n\epsilon_\pm^n\biggr)\gamma_\pm\epsilon_\pm
-    =-\alpha x\gamma_\pm\epsilon_\pm^2\sum_{n=0}^\infty c_{n+1}\epsilon_\pm^n,
-\]
-we see that
-\[
-H_\pm(w,x)=\biggl(\sum_{n=0}^\infty c_{n+2}\epsilon_\pm^n\biggr)\bigg/
-    \biggl(\alpha x\sum_{n=0}^\infty c_{n+1}\epsilon_\pm^n\biggr)
-    \quad\text{for $|x-\gamma_\pm|<|\gamma_\pm|=x^{1/\alpha}$.}
-\]
+Also, notice that $H_-(w,x)=\overline{H_+(\bar w,x)}$.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Pad\'e approximation}
 We wish to find a rational function of the form
