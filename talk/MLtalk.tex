@@ -212,7 +212,8 @@ Putting $n=k+1$,
 \end{align*}    
 and thus
 \[
-E_\alpha(-x)=\sum_{n=1}^N\frac{(-1)^{n-1}x^{-n}}{\Gamma(1-n\alpha)}+R_N(x).
+E_\alpha(-x)=\sum_{n=1}^N\frac{(-1)^{n-1}x^{-n}}{\Gamma(1-n\alpha)}+R_N(x)
+\quad\text{as $x\to\infty$.}
 \]
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,10 +228,13 @@ with $\mu>0$ and $0<\phi<\pi/2$.  Since
 \Re w&=\mu(1-\cosh u\,\sin\phi),\\
 \Im w&=\mu\sinh u\,\cos\phi,
 \end{align*}
-the factor~$e^{w(u)}$ exhibits a double exponential decay as~$|u|\to\infty$.
+we see that
+\[
+\Re w(u)\approx-(\tfrac12\mu\sin\phi)e^{|u|}\quad\text{for large $|u|$,}
+\]
+so $e^{w(u)}$ exhibits a double exponential decay as~$|u|\to\infty$.
 \vfill
-Easy to see that $\mathcal{C}$ is the left branch of the hyperbola with 
-asymptotes
+Find $\mathcal{C}$ is the left branch of the hyperbola with asymptotes
 \[
 \Im w=\pm(\Re w-1)\cot\phi.
 \]
@@ -264,7 +268,7 @@ Q_h(x)=\frac{h}{2\pi i}\sum_{n=-\infty}^\infty e^{w(nh)}G(nh,x).
 \pgfmathsetmacro{\sval}{0.7}
 \pgfmathsetmacro{\phival}{0.8}
 \begin{tikzpicture}[scale=1.1]
-\draw[->] (-2,0) -- (2,0);
+\draw[->,thick] (-2,0) -- (2,0);
 \node[right] at (2,0) {$u$};
 \draw[->] (0,-2) -- (0,2);
 \node[above] at (0,2) {$v$};
@@ -328,7 +332,7 @@ resulting in an additional truncation error
 For $-\infty<u<\infty$,
 \begin{align*}
 \Re w(u+ir)&\le\mu\bigl(1-\sin(\phi+r)\bigr),\\
-\Re w(u-is)&\le\mu(\bigl(1-\sin(\phi-s)\bigr),
+\Re w(u-is)&\le\mu\bigl(1-\sin(\phi-s)\bigr),
 \end{align*}
 so, for the extremal values $r^\star=\pi/2-\phi$ and $s^\star=\phi$, 
 \[
@@ -336,7 +340,7 @@ M(x,r^\star)=O(1)\quad\text{and}\quad M(x,-s^\star)=O\bigl(\exp(\mu)\bigr).
 \]
 Likewise,
 \[
-\Re w(u_n)\le\mu\bigl(1-\sin\phi\,\cosh(Nh)\bigr)
+\Re w(nh)\le\mu\bigl(1-\sin\phi\,\cosh(Nh)\bigr)
 \quad\text{for $|n|\ge N+1$,}
 \]
 so
@@ -425,6 +429,7 @@ e^{-B(\phi^\star)N}=\frac{1}{10.1315^N}.
 \includegraphics[scale=0.6]{../experiments/error.pdf} 
 \end{center}
 \end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Rational Approximation}
 \begin{frame}{Rational Approximation}
@@ -495,6 +500,71 @@ Q_{h,N}(0)=\frac{h}{2\pi i}\sum_{n=-N}^Ne^w\,\frac{w_n'}{w_n}
 }
 \end{center}
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Values on the positive half-line}
+\begin{frame}{Values on the positive half-line}
+Contour integral representation
+\[
+E_\alpha(x)=\frac{1}{2\pi i}\int_{\mathcal{C}}e^w\,
+    \frac{w^{\alpha-1}\,dw}{w^\alpha-x},\qquad x\ge0.
+\]
+Here, $\mathcal{C}$ must pass to the right of the pole at~$w=x^{1/\alpha}$.
+Residue is
+\[
+\lim_{w\to x^{1/\alpha}}e^w w^{\alpha-1}\,
+    \frac{w-x^{1/\alpha}}{w^\alpha-x}=\alpha^{-1}\exp(x^{1/\alpha}).
+\]
+Thus,
+\[
+E_\alpha(x)=\alpha^{-1}\exp(x^{1/\alpha})
+    +\frac{1}{2\pi i}\int_{\mathcal{C'}}e^w\,
+    \frac{w^{\alpha-1}\,dw}{w^\alpha-x},\qquad x\ge0,
+\]
+where the $\mathcal{C}'$ is a fixed Hankel contour passing between $0$~and 
+$x^{1/\alpha}$.
+\end{frame}
+
+\begin{frame}
+Asymptotics as $x\to\infty$:
+\[
+E_\alpha(x)=\alpha^{-1}\exp(x^{1/\alpha})-\sum_{n=1}^N
+    \frac{x^{-n}}{\Gamma(1-n\alpha)}+O(x^{-N-1}).
+\]
+Write
+\[
+\frac{w^{\alpha-1}}{w^\alpha-x}=w^{\alpha-1}\,\frac{G(w,x)}{w-x^{1/\alpha}}
+    =\frac{G(x^{1/\alpha},x)}{w-x^{1/\alpha}}+H(w,x)
+\]
+where
+\[
+G(w,x)=\frac{w-x^{1/\alpha}}{w^\alpha-x}
+\]
+and
+\[
+H(w,x)=\frac{w^{\alpha-1}G(w,x)-x^{1-1/\alpha}G(x^{1/\alpha},x)}%
+{w-x^{1/\alpha}}
+\]
+have removable singularities at~$x=w^{1/\alpha}$.
+\end{frame}
+\begin{frame}
+Find
+\[
+G(x^{1/\alpha},x)=\frac{x^{(1/\alpha)-1}}{\alpha}
+\]
+so
+\begin{align*}
+E_\alpha(x)&=\frac{1}{2\pi i}\int_{\mathcal{C}'}e^w w^{\alpha-1}
+    \biggl(\frac{G(x^{1/\alpha},x)}{w-x^{1/\alpha}}+H(w,x)\biggr)\,dw\\
+    &=\alpha^{-1}\exp(x^{1/\alpha})
+    +\frac{1}{2\pi i}\int_{\mathcal{C}'}e^w w^{\alpha-1}H(w,x)\,dw\\
+    &\approx\alpha^{-1}\exp(x^{1/\alpha})
+    +\frac{h}{2\pi i}\sum_{n=-N}^Ne^{w_n}w_n^{\alpha-1}H(w_n,x)w_n',
+\end{align*}
+for $h$, $w_n$ and $w_n'$ as before.
+
+
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
