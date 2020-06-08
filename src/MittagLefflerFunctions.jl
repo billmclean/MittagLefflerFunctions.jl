@@ -11,6 +11,6 @@ using .Pade
 using .Quadrature
 
 export MLPade
-export MLQuad1
+export MLQuad1, MLQuad2, MLQuad3
 
 end # module
