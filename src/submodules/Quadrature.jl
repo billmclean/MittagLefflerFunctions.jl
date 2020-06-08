@@ -13,7 +13,7 @@ coef_μ(ϕ) =  π*(4ϕ-π) / coef_h(ϕ)
 `QSum` holds the coefficients for a quadrature sum approximating the 
 contour integral of `e^w F(w) / 2πi`:
 
-    A * ( C[0] Re( F(w[0]) ) + ⋯ + C[N] * Re( F(w[N]) ) )
+    A * ( C[0] Re( F(w[0]) ) + ⋯  + C[N] * Re( F(w[N]) ) )
 """
 struct QSum{T<:AbstractFloat}
     w::OffsetArray{Complex{T}}
@@ -45,7 +45,7 @@ end
 `MLQuad3` holds data for computing the Mittag--Leffler function `Eαβ(-x)`
 when `x≥0` and `1<α<2`.
 """
-struct MLQuad2{T<:AbstractFloat}
+struct MLQuad3{T<:AbstractFloat}
     α::T
     β::T
     qs::QSum{T}
@@ -178,24 +178,24 @@ function MLQuad3(α::T, β::T, N::Integer) where T <: AbstractFloat
     return MLQuad3(α, β, qs)
 end
 
-function Hplus(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
-    γp = x^(1/α) * exp(complex(zero(T), π/α))
-    ϵp = ( w - γp ) / γp
-    if abs(ϵp) > sep
-        return w^(α-β) / ( w^α + x ) - γp^(1-β) / ( α * ϵp * γp^β )
+function H₊(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+    γ₊ = x^(1/α) * exp(complex(zero(T), π/α))
+    ϵ₊ = ( w - γ₊ ) / γ₊
+    if abs(ϵ₊) > sep
+        return w^(α-β) / ( w^α + x ) - γ₊^(1-β) / ( α * ϵ₊ * γ₊^β )
     else
-        return ( ψ1(α-β,ϵp) - (1+ϵp)^(α-β)*ψ2(α,ϵp) / ψ1(α,ϵp) ) / (α*γp^β)
+        return ( ψ1(α-β,ϵ₊) - (1+ϵ₊)^(α-β)*ψ2(α,ϵ₊) / ψ1(α,ϵ₊) ) / (α*γ₊^β)
     end
 end
 
-function Hminus(α::T, β::T, w::Complex{T}, x::T, sep::T
+function H₋(α::T, β::T, w::Complex{T}, x::T, sep::T
                ) where T <: AbstractFloat
-    γm= x^(1/α) * exp(complex(zero(T), -π/α))
-    ϵm = ( w - γm) / γm
-    if abs(ϵm) > sep
-        return w^(α-β) / ( w^α + x ) - γm^(1-β) / ( α * ϵm * γm^β )
+    γ₋= x^(1/α) * exp(complex(zero(T), -π/α))
+    ϵ₋ = ( w - γ₋) / γ₋
+    if abs(ϵ₋) > sep
+        return w^(α-β) / ( w^α + x ) - γ₋^(1-β) / ( α * ϵ₋ * γ₋^β )
     else
-        return ( ψ1(α-β,ϵm) - (1+ϵm)^(α-β)*ψ2(α,ϵm) / ψ1(α,ϵm) ) / (α*γm^β)
+        return ( ψ1(α-β,ϵ₋) - (1+ϵ₋)^(α-β)*ψ2(α,ϵ₋) / ψ1(α,ϵ₋) ) / (α*γ₋^β)
     end
 end
 
@@ -208,8 +208,8 @@ function (E::MLQuad3{T})(x::T) where T <: AbstractFloat
     else
         s = zero(T)
         for n in axes(w, 1)
-            s += real( C[n] * ( Hplus(α, β, w[n], x, sep) 
-                             + Hminus(α, β, w[n], x, sep) ) ) / 2
+            s += real( C[n] * ( H₊(α, β, w[n], x, sep) 
+                              + H₋(α, β, w[n], x, sep) ) ) / 2
         end
         sum_residues = ( ( x^((1-β)/α) / α ) * exp(x^(1/α)*cos(π/α))
                  * cos( π*(1-β)/α + x^(1/α)*sin(π/α) ) )
