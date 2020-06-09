@@ -6,7 +6,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{Evaluation of the Mittag-Leffler Function}
 \author{William McLean}
-\date{\today}
+\date{9 June, 2020}
 \begin{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
@@ -55,7 +55,7 @@ derivatives}, \emph{FCAA}, 2002.
 \item  Igor Podlubny,
 \href{https://www.mathworks.com/matlabcentral/fileexchange/%
 8738-mittag-leffler-function}%
-{Mittag-Leffler function}, MATLAB Central File Exchange, 2020. 
+{Mittag-Leffler function}, MATLAB Central File Exchange, 2012--2020. 
 \end{itemize}
 \end{frame}
 \begin{frame}{Origin}
@@ -105,7 +105,7 @@ E_{1/2}(z)=\operatorname{erfcx}(-z)=\exp(z^2)\operatorname{erfc}(-z).
 \begin{frame}{Application: fractional relaxation equation}
 The fractional IVP
 \[
-\partial_t u-\lambda\partial_t^{1-\alpha}u=0
+\partial_t u+\lambda\partial_t^{1-\alpha}u=0
     \quad\text{for $t>0$, with $u(0)=u_0$,}
 \]
 is given by $u(t)=u_0 E_\alpha(-\lambda t^\alpha)$.
@@ -151,13 +151,16 @@ p(x)=O(x^{-\alpha-1})\quad\text{as $x\to\infty$.}
 \]
 \vfill
 \begin{center}
-\begin{tikzpicture}[scale=0.6]
+\begin{tikzpicture}[scale=0.8]
 \draw[->] (-5,0) -- (4,0);
 \node[below right] at (4,0) {$\Re w$};
 \draw[->] (0,-3) -- (0,3);
 \node[right] at (0,3) {$\Im w$};
-\draw[->,thick,domain=-2.5:2.5] plot (1-\x*\x, \x);
-\node[below right] at (1, 0) {$\mathcal{C}$};
+\draw[->,thick,domain=-3.5:3.5, blue] plot (3-\x*\x/2, \x);
+\draw[-] (0, 0) circle [radius=2];
+\node[blue, below left] at ({-25/8}, 3.5) {$\mathcal{C}$};
+\draw[<->,red] (0,0) -- ({2*cos(40)}, {2*sin(40)});
+\node[red,above] at ({sqrt(2)/2},{sqrt(2)/2}) {$|z|^{1/\alpha}$};
 \end{tikzpicture}
 \end{center}
 \end{frame}
@@ -174,7 +177,7 @@ E_\alpha(z)&=\sum_{n=0}^\infty\frac{z^n}{\alert{\Gamma(1+n\alpha)}}
 	&=\frac{1}{2\pi i}\int_{\mathcal{C}}
 	\frac{e^w}{w}\,\frac{dw}{1-zw^{-\alpha}}.
 \end{align*}
-Note: substitution $w=\lambda x$ gives
+Remark: substitution $w=\lambda x$ gives
 \[
 E_\alpha(-x^\alpha)=\frac{1}{2\pi i}\int_{\mathcal{C}}
     \frac{e^{\lambda x}\,d\lambda}{\lambda+\lambda^{1-\alpha}}
@@ -207,14 +210,19 @@ Putting $n=k+1$,
 \begin{align*}
 \sum_{k=0}^{N-1}&\frac{1}{2\pi i}\int_{\mathcal{C}}
     e^w\,\frac{w^{\alpha-1}}{x}\,(-x^{-1}w^\alpha)^k\,dw\\
-    &=\sum_{n=1}^N\frac{(-1)^{n-1}x^{-n}}{2\pi i}\int_{\mathcal{C}}
-    \frac{e^w\,dw}{w^{1-n\alpha}}
+    &=\sum_{n=1}^N\frac{(-1)^{n-1}x^{-n}}{\alert{2\pi i}} 
+    \alert{\int_{\mathcal{C}}\frac{e^w\,dw}{w^{1-n\alpha}}}
 \end{align*}    
 and thus
 \[
-E_\alpha(-x)=\sum_{n=1}^N\frac{(-1)^{n-1}x^{-n}}{\Gamma(1-n\alpha)}+R_N(x)
-\quad\text{as $x\to\infty$.}
+E_\alpha(-x)=\sum_{n=1}^N\frac{(-1)^{n-1}x^{-n}}{\alert{\Gamma(1-n\alpha)}}
+    +R_N(x)\quad\text{as $x\to\infty$.}
 \]
+\vfill
+\begin{itemize}
+\item R.~B.~Paris, Asymptotics of the Mittag-Leffler function $E_a(z)$
+on the negative real axis when $a\to1$, arXiv, 2020.
+\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Evaluation by Quadrature}
