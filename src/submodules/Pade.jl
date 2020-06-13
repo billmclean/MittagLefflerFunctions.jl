@@ -1,6 +1,6 @@
 module Pade
 
-using ..MittagLefflerFunctions: Γ
+using ..MittagLefflerFunctions: rΓ
 using OffsetArrays
 using LinearAlgebra: svd
 
@@ -48,14 +48,14 @@ function pade_matrix(α::T, β::T,
     b = OffsetArray{T}(undef, 0:n-1)
     pow = one(T)
     for k = 0:m-1
-        a[k] = pow / Γ(β+k*α)
+        a[k] = pow * rΓ(β+k*α)
         pow = -pow
     end
     b[0] = zero(T)
     pow = one(T)
     for k = 1:n-1
         pow = -pow
-        b[k] = pow * sinpi(k*α-β) * Γ(1+k*α-β) / π
+        b[k] = pow * rΓ(β-k*α)
     end
     A = zeros(T, 2r, 2r+1)
     if m ≥ r+1
