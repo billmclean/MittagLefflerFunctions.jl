@@ -1,12 +1,10 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[margin=2cm]{geometry}
 \usepackage{amsmath,amsfonts,amsthm}
-\newtheorem{example}{Example}
 \usepackage{graphicx}
-\usepackage[backend=biber]{biblatex}
+\usepackage{biblatex}
 \usepackage{hyperref}
 \usepackage{cleveref}
-\usepackage{kbordermatrix}
 \bibliography{MLnotes}
 \title{Notes on the Mittag--Leffler function}
 \author{William McLean}
@@ -176,13 +174,13 @@ h=\frac{a(\phi)}{N}\quad\text{and}\quad \mu=b(\phi)\,N,
 \]
 so that the error~$Q_{h,N}(x)-E_{\alpha,\beta}(-x)$ is order~$e^{-C(\phi)N}$ 
 for
-\begin{equation}\label{eq: c function}
-c(\phi)=\frac{\pi^2-2\pi\phi}{A(\phi)}.
+\begin{equation}\label{eq: C function}
+C(\phi)=\frac{\pi^2-2\pi\phi}{A(\phi)}.
 \end{equation}
-\Cref{fig: c plot} shows a plot of~$c(\phi)$, and we find using a standard 
+\Cref{fig: C plot} shows a plot of~$C(\phi)$, and we find using a standard 
 optimization package that the maximum value occurs at
 \[
-\phi=\phi_\star=1.172104\quad\text{with}\quad c(\phi_\star)=2.315654.
+\phi=\phi_\star=1.172104\quad\text{with}\quad C(\phi_\star)=2.315654.
 \]
 Furthermore,
 \[
@@ -194,12 +192,12 @@ leading to the optimal values
 h=h_\star=\frac{a(\phi_\star)}{N}\quad\text{and}\quad
 \mu=\mu_\star=b(\phi_\star)\,N.
 \]
-Since $e^{c(\phi_\star)}=10.131547$ we expect to gain about an extra decimal
+Since $e^{B(\phi_\star)}=10.131547$ we expect to gain about an extra decimal
 digit of accuracy each time we increase $N$ by~$1$.
 
 \begin{figure}
-\caption{Plot of $c(\phi)$ from~\eqref{eq: c function} showing the 
-maximum at~$\phi_\star$.}\label{fig: c plot}
+\caption{Plot of $C(\phi)$ from~\eqref{eq: C function} showing the 
+maximum at~$\phi_\star$.}\label{fig: C plot}
 \begin{center}
 \includegraphics[scale=0.75]{Bplot.pdf}
 \end{center}
@@ -207,20 +205,20 @@ maximum at~$\phi_\star$.}\label{fig: c plot}
 
 Notice that
 \[
-\frac{hw'(u)}{2\pi i}=\frac{h\mu}{2\pi}\,\cos(iu-\phi_\star)
-    =\frac{a(\phi_\star)b(\phi_\star)}{2\pi}\,\cos(iu-\phi_\star)
+\frac{hw'(u)}{2\pi i}=\frac{h\mu}{2\pi}\,\cos(iu-\phi)
+    =\frac{a(\phi_\star)b(\phi_\star)}{2\pi}\,\cos(iu-\phi)
 \]
 so we can re-write the sum~\eqref{eq: Q_hN} as
 \[
 Q_{hN}(x)=\frac{a(\phi_\star)b(\phi_\star)}{2\pi}\sum_{n=-N}^N
-    e^{w_n}F(w_n,x)\cos(iu_n-\phi_\star).
+    e^{w_n}F(w_n,x)\cos(iu_n-\phi).
 \]
 Also, $u_{-n}=-u_n$, $w(-u)=\overline{w(u)}$~and 
 $F(\bar w,x)=\overline{F(w,x)}$, so the terms of the sum occur in complex 
 conjugate pairs,
 \[
-e^{w_{-n}}F(w_{-n},x)\cos(iu_{-n}-\phi_\star)
-    =\overline{e^{w_n}F(w_n,x)\cos(iu_n-\phi_\star)}.
+e^{w_{-n}}F(w_{-n},x)\cos(iu_{-n}-\phi)
+    =\overline{e^{w_n}F(w_n,x)\cos(iu_n-\phi)}.
 \]
 Thus,
 \[
@@ -228,17 +226,8 @@ Q_{h,N}(x)=\frac{a(\phi_\star)b(\phi_\star)}{\pi}\biggl(
     \tfrac12e^{w_0}F(w_0,x)\cos\phi
     +\sum_{n=1}^N\Re\bigl(e^{w_n}F(w_n,x)\cos(iu_n-\phi)\bigr)\biggr),
 \]
-but note that $w_n$~and $u_n$ depend on~$N$ through $h$~and $\mu$.  By letting
-\[
-A=\frac{a(\phi_\star)b(\phi_\star)}{\pi},\qquad
-C_0=\tfrac12e^{w_0}\cos\phi,\qquad
-C_n=e^{w_n}\cos(iu_n-\phi_\star)
-\]
-we can write the sum as
-\[
-Q_{h,N}(x)=A\sum_{n=0}^N\Re\bigl(C_nF(w_n,x)\bigr)
-    =A\sum_{n=0}^N\Re\biggl(\frac{C_nw_n^{\alpha-\beta}}{x+w_n^\alpha}\biggr).
-\]
+but note that $w_n$~and $u_n$ depend on~$N$ through $h$~and $\mu$.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Quadrature approximation: positive real argument}
 We now consider
@@ -249,34 +238,34 @@ E_{\alpha,\beta}(x)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}
 where the Hankel contour must pass to the right of the pole at~$w=x^{1/\alpha}$.
 Write
 \[
-F(w,-x)=w^{\alpha-\beta}\,\frac{G(w,x)}{w-x^{1/\alpha}}\quad\text{where}\quad
-G(w,x)=\frac{w-x^{1/\alpha}}{w^\alpha-x},
+F(w,-x)=w^{\alpha-\beta}\,\frac{\rho(w,x)}{w-x^{1/\alpha}}\quad\text{where}\quad
+\rho(w,x)=\frac{w-x^{1/\alpha}}{w^\alpha-x},
 \]
-and observe that $G(w,x)$ has a removable singularity at~$w=x^{1/\alpha}$. In 
-fact, using L'H\^ospital's rule,
+and observe that $\rho(w,x)$ has a removable singularity at~$w=x^{1/\alpha}$. 
+In fact, using L'H\^ospital's rule,
 \[
-G(x^{1/\alpha},x)=\lim_{w\to x^{1/\alpha}}
+\rho(x^{1/\alpha},x)=\lim_{w\to x^{1/\alpha}}
     \frac{w-x}{w^\alpha-x}=\frac{x^{(1/\alpha)-1}}{\alpha},
 \]
-and we have
+and if we define
 \[
-E_{\alpha,\beta}(x)=\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^w w^{\alpha-\beta}\,
-    \frac{G(w,x)}{w-x^{1/\alpha}}\,dw.
+H(w;x)=\frac{w^{\alpha-\beta}\rho(w;x)
+-(x^{1/\alpha})^{\alpha-\beta}\rho(x^{1/\alpha};x)}{w-x^{1/\alpha}}
+    =\frac{w^{\alpha-\beta}}{w^\alpha-x}
+    -\frac{\alpha^{-1}x^{(1-\beta)/\alpha}}{w-x^{1/\alpha}}
 \]
-For $w\ne x^{1/\alpha}$, let
+then
 \[
-H(w,x)=\frac{w^{\alpha-\beta}G(w,x)-x^{1-\beta/\alpha}G(x^{1/\alpha},x)}%
-{w-x^{1/\alpha}}
-=\frac{w^{\alpha-\beta}}{w^\alpha-x}
-    -\frac{x^{(1-\beta)/\alpha}}{\alpha(w-x^{1/\alpha})},
+F(w;-x)=\frac{\alpha^{-1}x^{(1-\beta)/\alpha}}{w-x^{1/\alpha}}+H(w;x). 
 \]
-so that
-\[
-E_{\alpha,\beta}(-x)=\frac{x^{1-\beta/\alpha}G(x^{1/\alpha},x)}{2\pi i}
-\int_{\mathcal{C}}\frac{e^w}{w-x^{1/\alpha}}\,dw
-    +\frac{1}{2\pi i}\int_{\mathcal{C}}e^wH(w,x)\,dw
-\]
-and thus
+Hence,
+\begin{align*}
+E_{\alpha,\beta}(x)&=\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^w F(w;-x)\,dw\\
+    &=\frac{\alpha^{-1}x^{(1-\beta)/\alpha}}{2\pi i}\int_{-\infty}^{0^+}
+    \frac{e^w\,dw}{w-x^{1/\alpha}}
+    +\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^w H(w;x)\,dw,
+\end{align*}
+that is,
 \begin{equation}\label{eq: pos H}
 E_{\alpha,\beta}(x)=\alpha^{-1}x^{(1-\beta)/\alpha}\exp(x^{1/\alpha})
     +\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^w H(w,x)\,dw.
@@ -287,105 +276,45 @@ approach as in \Cref{sec: quad neg}, with $H(w,x)$ replacing $F(w,x)$.
 To evaluate $H(w,x)$ for $w$ near~$x^{1/\alpha}$, put
 \[
 w=x^{1/\alpha}(1+\epsilon)\quad\text{where}\quad 
-\epsilon=\frac{w-x^{1/\alpha}}{x^{1/\alpha}},
+\epsilon=\frac{w-x^{1/\alpha}}{x^{1/\alpha}}
 \]
 and define
-\begin{equation}\label{eq: psi 1 2}
+\[
 \psi_{1,\alpha}(\epsilon)=\frac{(1+\epsilon)^\alpha-1}{\epsilon}
-\quad\text{and}\quad
+    =\sum_{k=1}^\infty\binom{\alpha}{k}\epsilon^{k-1}
+\]
+and
+\[
 \psi_{2,\alpha}(\epsilon)
-=\frac{(1+\epsilon)^\alpha-(1+\alpha\epsilon)}{\epsilon^2}
-\end{equation}
-so that
-\[
-(1+\epsilon)^\alpha=1+\epsilon\psi_{1,\alpha}(\epsilon)=1+\alpha\epsilon
-    +\epsilon^2\psi_{2,\alpha}(\epsilon).
-\]
-Note that
-\[
-\psi_{1,\alpha}(\epsilon)=\sum_{n=0}^\infty c_{n+1}(\alpha)\epsilon^n
-\quad\text{and}\quad
-\psi_{2,\alpha}(\epsilon)=\sum_{n=0}^\infty c_{n+2}(\alpha)\epsilon^n
-\quad\text{for $|\epsilon|<1$,}
-\]
-where
-\[
-c_n(\alpha)=\frac{\alpha}{1}\cdot\frac{\alpha-1}{2}\cdots\frac{\alpha-n+1}{n},
-\]
-or in other words,
-\[
-c_1(\alpha)=\alpha\qquad\text{and}\qquad 
-c_n(\alpha)=-\frac{n-\alpha-1}{n}\,c_{n-1}(\alpha)
-\quad\text{for $n\ge2$.}
+    =\frac{(1+\epsilon)^\alpha-(1+\alpha\epsilon)}{\epsilon}
+    =\sum_{k=2}^\infty\binom{\alpha}{k}\epsilon^{k-2}.
 \]
 In this way,
 \[
-w^\alpha-x=x[(1+\epsilon)^\alpha-1]=x\epsilon\psi_{1,\alpha}(\epsilon)
-    =x[\alpha\epsilon+\epsilon^2\psi_{2,\alpha}(\epsilon)].
-\]
-Write
-\[
-H(w,x)=w^{\alpha-\beta}\,\frac{G(w,x)-G(x^{1/\alpha},x)}{w-x^{1/\alpha}}
-+\frac{w^{\alpha-\beta}-(x^{1/\alpha})^{\beta-\alpha}}{w-x^{1/\alpha}}
-    \,G(x^{1/\alpha},x),
-\]
-and observe that
-\[
-\frac{G(w,x)-G(x^{1/\alpha},x)}{w-x^{1/\alpha}}
-=\frac{1}{w^\alpha-x}-\frac{\alpha^{-1}x^{1/\alpha}}{w-x^{1/\alpha}}
-=\frac{(w-x^{1/\alpha})-\alpha^{-1}x^{(1/\alpha)-1} (w^\alpha-x)}%
-{(w^\alpha-x)(w-x^{1/\alpha})}.
-\]
-The numerator equals
-\[
-\epsilon x^{1/\alpha}-\alpha^{-1}x^{1/\alpha}\bigl[\alpha\epsilon
-    +\epsilon^2\psi_{2,\alpha}(\epsilon)\bigr]
-    =-\frac{x^{1/\alpha}}{\alpha}\,\epsilon^2\psi_{2,\alpha}(\epsilon)
-\]
-and the denominator equals
-\[
-\bigl[x\epsilon\psi_{1,\alpha}(\epsilon)\bigr]\epsilon x^{1/\alpha}
-    =x^{1+1/\alpha}\epsilon^2\psi_{2,\alpha}(\epsilon),
+w^\alpha-x=x\epsilon\psi_{1,\alpha}(\epsilon)
+    =x\epsilon[\alpha+\epsilon\psi_{2,\alpha}(\epsilon)],
 \]
 so
-\[
-\frac{G(w,x)-G(x^{1/\alpha},x)}{w-x^{1/\alpha}}
-    =-\frac{\psi_{2,\alpha}(\epsilon)}{\alpha x\psi_{1,\alpha}(\epsilon)}
-    \quad\text{for $|w-x^{1/\alpha}|<x^{1/\alpha}$.}
-\]
-Similarly,
-\[
-w^{\alpha-\beta}-(x^{1/\alpha})^{\alpha-\beta}
-    =(x^{1/\alpha})^{\alpha-\beta}[(1+\epsilon)^{\alpha-\beta}-1]
-    =x^{1-\beta/\alpha}\epsilon\psi_{1,\alpha-\beta}(\epsilon)
-\]
-and hence
-\[
-\frac{w^{\alpha-\beta}-(x^{1/\alpha})^{\beta-\alpha}}{w-x^{1/\alpha}}
-    =x^{1-(1+\beta)/\alpha}\psi_{1,\alpha-\beta}(\epsilon)
-    \quad\text{for $|w-x^{1/\alpha}|<x^{1/\alpha}$.}
-\]
-Thus,
 \begin{align*}
-H(w,x)&=\alpha^{-1}x^{-\beta/\alpha}\psi_{1,\alpha-\beta}(\epsilon)
--w^{\alpha-\beta}\frac{\psi_{2,\alpha}(\epsilon)}%
-{\alpha x\psi_{1,\alpha}(\epsilon)}\\
-    &=\frac{x^{-\beta/\alpha}}{\alpha}\biggl(\psi_{1,\alpha-\beta}(\epsilon)
-    -(1+\epsilon)^{\alpha-\beta}\,\frac{\psi_{2,\alpha}(\epsilon)}%
-{\psi_{1,\alpha}(\epsilon)}\biggr),
+H(w;x)&=\frac{w^{\alpha-\beta}(w-x^{1/\alpha})
+-\alpha^{-1}x^{(1-\beta)/\alpha}(w^\alpha-x)}{(w^\alpha-x)(w-x^{1/\alpha})}\\
+&=\frac{x^{(\alpha-\beta)/\alpha}(1+\epsilon)^{\alpha-\beta}
+(x^{1/\alpha}\epsilon)-x^{(1-\beta)/\alpha}x\epsilon 
+[1+\alpha^{-1}\epsilon\psi_{2,\alpha}(\epsilon)]}%
+{x\epsilon\psi_{1,\alpha}(\epsilon)(x^{1/\alpha}\epsilon)}\\
+&=\frac{x^{1+(1-\beta)/\alpha}\epsilon}{x^{1+(1/\alpha)}\epsilon}\,
+\frac{[1+\epsilon\psi_{1,\alpha-\beta}(\epsilon)]
+-[1+\alpha^{-1}\epsilon\psi_{2,\alpha}(\epsilon)]}%
+{\epsilon\psi_{1,\alpha}(\epsilon)}\\
+&=\frac{\psi_{1,\alpha-\beta}(\epsilon)-\alpha^{-1}\psi_{2,\alpha}(\epsilon)}%
+{x^{\beta/\alpha}\psi_{1,\alpha}(\epsilon)},
 \end{align*}
-and in particular, since
-\begin{equation}\label{eq: psi zero}
-\psi_{1,\alpha}(0)=c_1(\alpha)=\alpha
-\quad\text{and}\quad
-\psi_{2,\alpha}(0)=c_2(\alpha)=\frac{\alpha(\alpha-1)}{2},
-\end{equation}
-we see that
+and thus
 \[
-H(x^{1/\alpha},x)=\frac{x^{-\beta/\alpha}}{\alpha}\biggl((\alpha-\beta)
-    -\frac{\alpha-1}{2}\biggr)=\frac{1+\alpha-2\beta}{2\alpha x^{\beta/\alpha}}.
+H(x^{1/\alpha};x)=\frac{\psi_{1,\alpha-\beta}(0)
+-\alpha^{-1}\psi_{2,\alpha}(0)}{x^{\beta/\alpha}\psi_{1,\alpha}(0)}
+    =\frac{1+\alpha-2\beta}{2\alpha x^{\beta/\alpha}}.
 \]
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Asymptotic expansion: negative real argument}
 Since
@@ -678,46 +607,44 @@ with $\arg\gamma_\pm=\pm\pi/\alpha$ and hence
 \]
 Let
 \[
-G_\pm(w,x)=\frac{w-\gamma_\pm}{w^\alpha+x},
+\varphi(w,x)=\frac{(w-\gamma_+)(w-\gamma_-)}%
+{(w^\alpha+x)(2w-\gamma_+-\gamma_-)}
 \]
 so that
 \[
-F(w,x)=\frac{w^{\alpha-\beta}}{2}\biggl(\frac{G_+(w,x)}{w-\gamma_+}
-    +\frac{G_-(w,x)}{w-\gamma_-}\biggr)
+\frac{1}{w^\alpha+x}=\varphi(w;x)\biggl(
+    \frac{1}{w-\gamma_+}+\frac{1}{w-\gamma-}\biggr)
 \]
 with
 \[
-G_\pm(\gamma_\pm,x)=\lim_{x\to\gamma_\pm}G_\pm(w,x)
+\varphi(\gamma_\pm;x)=\lim_{x\to\gamma_\pm}\varphi(w;x)
     =\frac{\gamma_\pm^{1-\alpha}}{\alpha}.
 \]
 Putting
 \[
-H_\pm(w,x)=
-\frac{w^{\alpha-\beta}G_\pm(w,x)-\gamma_\pm^{\alpha-\beta}G_\pm(\gamma_\pm,x)}% 
-{w-\gamma_\pm}=\frac{w^{\alpha-\beta}}{w^\alpha+x}
--\frac{\gamma_\pm^{1-\beta}}{\alpha(w-\gamma_\pm) } ,
-\qquad w\ne\gamma_\pm,
+H_\pm(w,x)=\frac{w^{\alpha-\beta}\varphi(w;x)
+-\gamma_\pm^{\alpha-\beta}\varphi(\gamma_\pm;x)}{w-\gamma_\pm}
+    =\frac{w^{\alpha-\beta}(w-\gamma_\mp)}{(w^\alpha+x)(2w-\gamma_+-\gamma_-)}
+-\frac{\alpha^{-1}\gamma_\pm^{1-\beta}}{w-\gamma_\pm},
 \]
 we have
 \[
-w^{\alpha-\beta}\,\frac{G_\pm(w,x)}{w-\gamma_+}
-    =\frac{\gamma_\pm^{1-\beta}/\alpha}{w-\gamma_\pm }
-    +H_\pm(w,x)
+w^{\alpha-\beta}\,\frac{\varphi(w;x)}{w-\gamma_\pm}
+    =\frac{\alpha^{-1}\gamma_\pm^{1-\beta}}{w-\gamma_\pm}+H_\pm(w,x)
 \]
 so
 \[
-F(w,x)=\frac{1}{2}\biggl(
-     \frac{\gamma_+^{1-\beta}/\alpha}{w-\gamma_+}
-    +\frac{\gamma_-^{1-\beta}/\alpha}{w-\gamma_-}\biggr)
-    +\frac{1}{2}\bigl(H_+(w,x)+H_-(w,x)\bigr)
+F(w,x)=\frac{1}{\alpha}\biggl(
+     \frac{\gamma_+^{1-\beta}}{w-\gamma_+}
+    +\frac{\gamma_-^{1-\beta}}{w-\gamma_-}\biggr)
+    +H_+(w;x)+H_-(w;x)
 \]
 and hence
 \begin{align*}
 E_{\alpha,\beta}(-x)&=\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^wF(w,x)\,dw\\
-&=\frac{1}{2\alpha}\,\bigl(\gamma_+^{1-\beta}e^{\gamma_+}
+&=\frac{1}{\alpha}\,\bigl(\gamma_+^{1-\beta}e^{\gamma_+}
     +\gamma_-^{1-\beta}e^{\gamma_-}\bigr)
-     +\frac{1}{2\pi i}\int_{-\infty}^{0^+}
-    \frac{e^w}{2} \bigl(H_+(w,x)+H_-(w,x)\bigr)\,dw.
+     +\frac{1}{2\pi i}\int_{-\infty}^{0^+}e^w\bigl(H_+(w,x)+H_-(w,x)\bigr)\,dw.
 \end{align*}
 Since
 \begin{align*}
@@ -729,439 +656,111 @@ Since
 \end{align*}
 it follows that
 \[
-\frac{1}{2\alpha}\,\bigl(\gamma_+^{1-\beta}e^{\gamma_+}
-    +\gamma_-^{1-\beta}e^{\gamma_-}\bigr)
-    =\frac{x^{(1-\beta)/\alpha}}{\alpha}\,\exp(x^{1/\alpha}\cos\pi/\alpha)
+\gamma_+^{1-\beta}e^{\gamma_+}
+    +\gamma_-^{1-\beta}e^{\gamma_-}
+    =2x^{(1-\beta)/\alpha}\,\exp(x^{1/\alpha}\cos\pi/\alpha)
     \cos\bigl(\pi(1-\beta)/\alpha+x^{1/\alpha}\sin\pi/\alpha\bigr).
 \]
-To evaluate $H_\pm(w,x)$ for $w$ near~$\gamma_\pm$, we put
+
+To evaluate $H_\pm(w;x)$ for~$w$ near~$\gamma_\pm$, let
 \[
 w=\gamma_\pm(1+\epsilon_\pm)\quad\text{where}\quad
 \epsilon_\pm=\frac{w-\gamma_\pm}{\gamma_\pm}.
 \]
-so that, using the functions~\eqref{eq: psi 1 2} and recalling that 
-$\gamma_\pm^\alpha=-x$,
+so that
+\[
+w^\alpha+x=-x(1+\epsilon_\pm)^\alpha+x
+    =-x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
+    =-x\epsilon_\pm[\alpha+\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]
+\]
+with
+\[
+w-\gamma_\pm=\gamma_\pm\epsilon_\pm,\qquad
+w-\gamma_\mp=\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm,\qquad
+2w-\gamma_+-\gamma_-=\gamma_+-\gamma_-+2\gamma_\pm\epsilon_\pm,
+\]
+We have
+\[
+H_\pm(w;x)=\frac{w^{\alpha-\beta}(w-\gamma_\mp)(w-\gamma_\pm)
+-\alpha^{-1}\gamma_\pm^{1-\beta}(w^\alpha+x)(2w-\gamma_\pm-\gamma_\mp)}%
+{(w^\alpha+x)(2w-\gamma_+-\gamma_-)(w-\gamma_\pm)},
+\]
+where the numerator equals
 \begin{align*}
-w^\alpha+x&=-x(1+\epsilon_\pm)^\alpha+x=-x[(1+\epsilon_\pm)^\alpha-1]
-    =-x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)\\
-    &=-x[\alpha\epsilon_\pm+\epsilon_\pm^2\psi_{2,\alpha}(\epsilon_\pm)].
+\gamma_\pm^{\alpha-\beta}&(1+\epsilon_\pm)^{\alpha-\beta}
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)(\gamma_\pm\epsilon_\pm)
++\alpha^{-1}\gamma_\pm^{1-\beta}
+x\epsilon_\pm[\alpha+\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\\
+&=x\gamma_\pm^{1-\beta}\epsilon_\pm\Bigl(-(1+\epsilon_\pm)^{\alpha-\beta}
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
++[1+\alpha^{-1}\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\Bigr)\\
+&=x\gamma_\pm^{1-\beta}\epsilon_\pm^2\Bigl(
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+[\alpha^{-1}\psi_{2,\alpha}(\epsilon_\pm)-\psi_{1,\alpha-\beta}(\epsilon_\pm)]
++\gamma_\pm[1+\alpha^{-1}\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]\Bigr)
 \end{align*}
-Write
-\[
-H_\pm(w,x)=w^{\alpha-\beta}\,\frac{G_\pm(w,x)-G_\pm(\gamma_\pm,x)}{w-\gamma_\pm}
-    +\frac{w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}}{w-\gamma_\pm}\,
-    G_\pm(\gamma_\pm,x)
-\]
-and observe that
-\[
-\frac{G_\pm(w,x)-G_\pm(\gamma_\pm,x)}{w-\gamma_\pm}=\frac{1}{w^\alpha+x}
-    -\frac{\alpha^{-1}\gamma_\pm^{1-\alpha}}{w-\gamma_\pm}
-    =\frac{(w-\gamma_\pm)-\alpha^{-1}\gamma_\pm^{1-\alpha}(w^\alpha+x)}%
-{(w^\alpha+x)(w-\gamma_\pm)}.
-\]
-The numerator on the right equals
-\[
-\epsilon_\pm\gamma_\pm+\alpha^{-1}\gamma_\pm^{1-\alpha}x
-    \bigl[\alpha\epsilon_\pm+\epsilon_\pm^2\psi_{2,\alpha}(\epsilon_\pm)\bigr]
-    =-\frac{\gamma_\pm}{\alpha}\,\epsilon_\pm^2\psi_{2,\alpha}(\epsilon_\pm)
-\]
 and the denominator equals
 \[
-\bigl[-x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)\bigr]\,\epsilon_\pm\gamma_\pm
-    =-\gamma_\pm x\epsilon_\pm^2\psi_{1,\alpha}(\epsilon_\pm),
+-x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
+(\gamma_\pm\epsilon_\pm)=-x\gamma_\pm\epsilon_\pm^2\psi_{1,\alpha}(\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
 \]
 so
 \[
-\frac{G_\pm(w,x)-G_\pm(\gamma_\pm,x)}{w-\gamma_\pm}
-=\frac{\psi_{2,\alpha}(\epsilon_\pm)}{\alpha x\psi_{1,\alpha}(\epsilon_\pm)}.
+H_\pm(w;x)=\frac{(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+[\psi_{1,\alpha-\beta}(\epsilon_\pm)-\alpha^{-1}\psi_{2,\alpha}(\epsilon_\pm)]
+-\alpha^{-1}\psi_{1,\alpha}(\epsilon_\pm)\gamma_\pm}%
+{\gamma_\pm^\beta\psi_{1,\alpha}(\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\mp)}.
+\]
+In particular,
+\[
+H_\pm(\gamma_pm;x)=\frac{(1+\alpha-2\beta)(\gamma_\pm-\gamma_\mp)-2\gamma_\pm}%
+{2\alpha\gamma_\pm^\beta(\gamma_\pm-\gamma_\mp)}.
 \]
 Similarly,
 \[
-w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}
-    =\gamma_\pm^{\alpha-\beta}\bigl[(1+\epsilon_\pm)^{\alpha-\beta}-1]
-    =\gamma_\pm^{\alpha-\beta}\epsilon_\pm\psi_{1,\alpha-\beta}(\epsilon_\pm)
+H_\mp(w;x)=\frac{w^{\alpha-\beta}(w-\gamma_\pm)(w-\gamma_\mp)
+-\alpha^{-1}\gamma_\mp^{1-\beta}(w^\alpha+x)(2w-\gamma_\mp-\gamma_\pm)}%
+{(w^\alpha+x)(2w-\gamma_+-\gamma_-)(w-\gamma_\mp)},
 \]
-and hence
-\[
-\frac{w^{\alpha-\beta}-\gamma_\pm^{\alpha-\beta}}{w-\gamma_\pm}
-    =\gamma_\pm^{\alpha-\beta-1}\psi_{1,\alpha-\beta}(\epsilon_\pm).
-\]
-Thus,
+where the numerator equals
 \begin{align*}
-H_\pm(w,x)&=w^{\alpha-\beta}
-\frac{\psi_{2,\alpha}(\epsilon_\pm)}{\alpha x\psi_{1,\alpha}(\epsilon_\pm)}
-    +\alpha^{-1}\gamma_\pm^{-\beta}\psi_{1,\alpha-\beta}(\epsilon_\pm)\\
-&=\frac{\gamma_\pm^{-\beta}}{\alpha}\biggl(\psi_{1,\alpha-\beta}(\epsilon_\pm)
-    -(1+\epsilon_\pm)^{\alpha-\beta}\,
-    \frac{\psi_{2,\alpha}(\epsilon_\pm)}{\psi_{1,\alpha}(\epsilon_\pm)}\biggr),
+\gamma_\pm^{\alpha-\beta}&(1+\epsilon_\pm)^{\alpha-\beta}
+(\gamma_\pm\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
++\alpha^{-1}\gamma_\mp^{1-\beta}x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\\
+&=-x\epsilon_\pm\Bigl(\gamma_\pm^{1-\beta}(1+\epsilon_\pm)^{\alpha-\beta}
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+-\alpha^{-1}\gamma_\mp^{1-\beta}\psi_{1,\alpha}(\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\Bigr)
 \end{align*}
-and in particular, by~\eqref{eq: psi zero},
+and the denominator equals
 \[
-H_\pm(\gamma_\pm,x)=\frac{\gamma_\pm^{-\beta}}{\alpha}\biggl((\alpha-\beta)
-    -\frac{\alpha-1}{2}\biggr)=\frac{1+\alpha-2\beta}{2\alpha\gamma_\pm^\beta}.
+-x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
 \]
-Also, notice that $H_-(w,x)=\overline{H_+(\bar w,x)}$.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Pad\'e approximation}
-We wish to find a rational function of the form
+so
 \[
-R(x)=\frac{p(x)}{q(x)}
-=\frac{p_0+p_1x+p_2x+\cdots+p_rx^r}{q_0+q_1x+q_2x^2+\cdots+q_sx^r}
+H_\mp(w;x)=\frac{\gamma_\pm^{1-\beta}(1+\epsilon_\pm)^{\alpha-\beta}
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+-\alpha^{-1}\gamma_\mp^{1-\beta}\psi_{1,\alpha}(\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)}%
+{\psi_{1,\alpha}(\epsilon_\pm)(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
+(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)}.
 \]
-such that
+In particular,
 \[
-E_{\alpha,\beta}(-x)=R(x)+\begin{cases}
-    O(x^m)&\text{as $x\to0$,}\\
-    O(x^{-n})&\text{as $x\to\infty$.}
-\end{cases}
-\]
-Let
-\[
-a(x)=\sum_{j=0}^{m-1}a_kx^k\quad\text{and}\quad
-b(x)=\sum_{j=1}^{n-1}b_kx^k
-\]
-and
-\[
-a_k=\frac{(-1)^k}{\Gamma(\beta+k\alpha)}
-\quad\text{and}\quad
-b_k=\frac{(-1)^{k+1}}{\Gamma(\beta-k\alpha)}
-    =\frac{(-1)^k}{\pi}\,\sin\pi(k\alpha-\beta)\Gamma(1+k\alpha-\beta),
-\]
-so that
-\[
-E_{\alpha,\beta}(-x)=\begin{cases}
-    a(x)+O(x^m)&\text{as $x\to0$,}\\
-    b(x^{-1})+O(x^{-n})&\text{as $x\to\infty$.}
-\end{cases}
-\]
-Thus, we require
-\begin{equation}\label{eq: p q 0}
-\frac{p(x)}{q(x)}-a(x)=O(x^m)\quad\text{as $x\to0$,}
-\end{equation}
-and
-\begin{equation}\label{eq: p q oo}
-\frac{x^{-r}p(x)}{x^{-r}q(x)}-b(x^{-1})=O(x^{-n})\quad\text{as $x\to\infty$,}
-\end{equation}
-or equivalently,
-\[
-p(x)-a(x)q(x)=O(x^m)\quad\text{as $x\to0$,}
-\]
-and
-\[
-x^{-r}p(x)-b(x^{-1})x^{-r}q(x)=O(x^{-n})\quad\text{as $x\to\infty$.}
-\]
-Equating coefficients of $x^k$ for~$0\le k\le m-1$ in~\eqref{eq: p q 0} and
-of~$x^{-k}$ for~$0\le k\le n-1$ in~\eqref{eq: p q oo} gives $m+n$~equations
-to determine the $2(r+1)$~coefficients of $p$~and $q$.  However, since the 
-ratio~$p/q$ is unchanged if numerator and denominator are both multiplied by a 
-common non-zero factor, we are free to put~$q_0=1$ leaving $2r+1$~unknowns.  
-Thus, we arrive at the constraint
-\[
-m+n=2r+1.
+H_\mp(\gamma_\pm;x)=\frac{\gamma_\pm^{1-\beta}-\gamma_\mp^{1-\beta}}%
+{\alpha(\gamma_\pm-\gamma_\mp)}=\frac{1}{x^{\beta/\alpha}}\,
+\frac{\sin\pi(1-\beta)/\alpha}{\alpha\sin\pi/\alpha}.
 \]
 
-If $m\le r+1$, then
-\begin{align*}
-p(x)-a(x)q(x)&=\sum_{k=0}^rp_kx^k-\sum_{\ell=0}^{m-1}a_\ell x^\ell
-    \sum_{j=0}^r q_jx^j\\
-&=\sum_{k=0}^{m-1}\biggl(p_k-\sum_{j=0}^k a_{k-j}q_j\biggr)x^k
-    +O(x^m)\quad\text{as $x\to0$,}
-\end{align*}
-whereas if $m>r+1$, then
-\[
-p(x)-a(x)q(x)=\sum_{k=0}^r\biggl(p_k-\sum_{j=0}^k a_{k-j}q_j\biggr)x^k
-    -\sum_{k=r+1}^{m-1}\biggl(\sum_{j=0}^r a_{k-j}q_j\biggr)x^k+O(x^m).
-\]
-Setting $b_0=0$, if $n\le r+1$, then
-\begin{align*}
-x^{-r}p(x)-b(x^{-1})x^{-r}q(x)&=\sum_{k=0}^r p_kx^{k-r}
-    -\sum_{\ell=0}^{n-1}b_\ell x^{-\ell}\sum_{j=0}^r q_jx^{j-r}\\
-    &=\sum_{k=r-n+1}^r\biggl(p_k-\sum_{j=k}^rb_{j-k}q_j\biggr)x^{k-r}
-    +O(x^{-n})\quad\text{as $x\to\infty$j}
-\end{align*}
-whereas if $n>r+1$, then
-\[
-x^{-r}p(x)-b(x^{-1})x^{-r}q(x)
-    =\sum_{k=0}^r\biggl(p_k-\sum_{j=k}^rb_{j-k}q_j\biggr)x^{k-r}
-    -\sum_{k=r-n+1}^{-1}\biggl(\sum_{j=0}^rb_{j-k}q_j\biggr)x^{k-r}+O(x^{-n}).
-\]
-
-If $m>r+1$ then $n=2r+1-m<r$ so the coefficients of $p(x)$~and $q(x)$ 
-must satisfy the system of linear equations
-\[
-\begin{aligned}
-p_k-\sum_{j=0}^ka_{k-j}q_j&=0&&\text{for $0\le k\le r$,}\\
-\sum_{j=0}^r a_{k-j}q_j&=0&&\text{for $r+1\le k\le m-1$,}\\
-p_k-\sum_{j=k}^rb_{j-k}q_j&=0&&\text{for $r-n+1\le k\le r$.}\\
-\end{aligned}
-\]
-If $m=r+1$ then $n=r$ so
-\[
-\begin{aligned}
-p_k-\sum_{j=0}^ka_{k-j}q_j&=0&&\text{for $0\le k\le r$,}\\
-p_k-\sum_{j=k}^rb_{j-k}q_j&=0&&\text{for $1\le k\le r$.}
-\end{aligned}
-\]
-If $m=r$ then $n=r+1$ so
-\[
-\begin{aligned}
-p_k-\sum_{j=0}^ka_{k-j}q_j&=0&&\text{for $0\le k\le r-1$,}\\
-p_k-\sum_{j=k}^rb_{j-k}q_j&=0&&\text{for $0\le k\le r$.}
-\end{aligned}
-\]
-Finally, if $m<r$ then $n>r+1$ so
-\[
-\begin{aligned}
-p_k-\sum_{j=0}^ka_{k-j}q_j&=0&&\text{for $0\le k\le m-1$,}\\
-\sum_{j=0}^rb_{j-k}q_j&=0&&\text{for $r-n+1\le k\le-1$,}\\
-p_k-\sum_{j=k}^rb_{j-k}q_j&=0&&\text{for $0\le k\le r$.}
-\end{aligned}
-\]
-Notice that in all four cases, the first equation and the last two equations 
-read
-\begin{align*}
-p_0-a_0q_0&=0,\\
-p_{r-1}-b_0q_{r-1}-b_1q_r&=0,\\
-p_r-b_0q_r&=0.
-\end{align*}
-Since we fixed $q_0=1$~and $b_0=0$, it follows that
-\[
-p_0=a_0=\frac{1}{\Gamma(\beta)}\quad\text{and}\quad p_r=0.
-\]
-When $\beta=\alpha$, we have also $p_{r-1}=0$ since $b_1=1/\Gamma(0)=0$.
-
-1G\begin{example}
-Suppose $r=3$ and we choose $m=r+1=4$ and $n=r=3$.  The linear system is
-\[
-\begin{aligned}
-p_k-\sum_{j=1}^ka_{k-j}q_j&=a_k&&\text{for $1\le k\le 3$,}\\
-p_k-\sum_{j=k+1}^3b_{j-k}q_j&=0&&\text{for $1\le k\le 3$,}
-\end{aligned}
-\]
-or, in matrix form,
-\[
-\begin{bmatrix}
-1& &-a_0&    &    \\
- &1&-a_1&-a_0&    \\
- & &-a_2&-a_1&-a_0\\
-1& &    &-b_1&-b_2\\
- &1&    &    &-b_1
-\end{bmatrix}
-\begin{bmatrix}p_1\\ p_2\\ q_1\\ q_2\\ q_3\end{bmatrix}
-=\begin{bmatrix}a_1\\ a_2\\ a_3\\ 0\\ 0\end{bmatrix},
-\]
-where we used the fact that $p_0=a_0$, $p_3=0$ and $q_0=1$.
-\end{example}
-
-\begin{figure}
-\caption{Error $R(x)-E_{1/2}(x)$ for two choices of $m$~and $n$ when~$r=3$.}
-\label{fig: pade 43 52 error}
-\begin{center}
-\includegraphics[scale=0.6]{../experiments/pade_43_52-crop.pdf}
-\end{center}
-\end{figure}
-
-\begin{table}
-\caption{Coefficients of $p(x)$~and $q(x)$ for two choices of $m$~and $n$
-when $r=3$.}\label{tab: pade 43 52 coef}
-\begin{center}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{c|cc|cc}
-   &\multicolumn{2}{c|}{$m=4$, $n=3$}
-   &\multicolumn{2}{c}{$m=5$, $n=2$}\\
-\hline
-$k$&$p_k$&$q_k$&$p_k$&$q_k$\\
-\hline
-   0&  1.00000&  1.00000&  1.00000&  1.00000\\
-   1&  0.76401&  1.89239&  0.61721&  1.74559\\
-   2&  0.21884&  1.35417&  0.15656&  1.12625\\
-   3&  0.00000&  0.38788&  0.00000&  0.27750
-\end{tabular}
-\end{center}
-\end{table}
-
-\begin{example}
-For comparison, suppose again that $r=3$ but take $m=5$ and $n=2$.  This time,
-\[
-\begin{aligned}
-p_k-\sum_{j=1}^ka_{k-j}q_j&=a_k&&\text{for $1\le k\le 3$,}\\
--\sum_{j=1}^3a_{k-j}q_j&=a_k&&\text{for $k=4$,}\\
-p_k-\sum_{j=k+1}^3b_{j-k}q_j&=0&&\text{for $2\le k\le 3$,}
-\end{aligned}
-\]
-or
-\[
-\begin{bmatrix}
-1& &-a_0&    &    \\
- &1&-a_1&-a_0&    \\
- & &-a_2&-a_1&-a_0\\
- & &-a_3&-a_2&-a_1\\
- &1&    &    &-b_1
-\end{bmatrix}
-\begin{bmatrix}p_1\\ p_2\\ q_1\\ q_2\\ q_3\end{bmatrix}
-=\begin{bmatrix}a_1\\ a_2\\ a_3\\ a_4\\ 0\end{bmatrix},
-\]
-with $p_0=a_0$, $p_3=0$ and $q_0=1$.  With $\alpha=1/2$ and $\beta=1$, the 
-errors are plotted in \cref{fig: pade 43 52 error}, and the values of the 
-coefficients are given in \cref{tab: pade 43 52 coef}.
-\end{example}
-
-\begin{example}
-If $r=3$, $m=2$ and $n=5$, then
-\[
-\begin{aligned}
-p_k-\sum_{j=1}^ka_{k-j}q_j&=a_k&&\text{for $1\le k\le 1$,}\\
--\sum_{j=1}^3 b_{j+k}q_j&=b_k&&\text{for $1\le k\le1$,}\\
--\sum_{j=1}^3 b_jq_j&=-a_0,&&\\
-p_k-\sum_{j=k+1}^3b_{j-k}q_j&=0&&\text{for $1\le k\le 2$,}
-\end{aligned}
-\]
-or
-\[
-\begin{bmatrix}
-1& &-a_0&    &\\
- & &-b_2&-b_3&-b_4\\
- & &-b_1&-b_2&-b_3\\
-1& &    &-b_1&-b_2\\
- &1&    &    &-b_1
-\end{bmatrix}
-\begin{bmatrix}p_1\\ p_2\\ q_1\\ q_2\\ q_3\end{bmatrix}
-=\begin{bmatrix}a_1\\ b_1\\ -a_0\\ 0\\ 0\end{bmatrix},
-\]
-
-\end{example}
-
-In general, after eliminating $p_0=a_0$, $p_r=0$ and $q_0=1$, we have to solve 
-a square linear system of order~$2r-1=m+n-2$ for the unknowns $p_1$, \ldots,
-$p_{r-1}$ and $q_1$, \ldots, $q_r$.  If $m\ge r+1$ and thus $n\le r$, then the
-system takes the form
-\[
-\begin{aligned}
-p_k-\sum_{j=1}^k a_{k-j}q_j&=a_k&&\text{for $1\le k\le r-1$,}\\
--\sum_{j=1}^r a_{k-j}q_j&=a_k&&\text{for $r\le k\le m-1$,}\\
-p_k-\sum_{j=k+1}^r b_{j-k}q_j&=0&&\text{for $r-n+1\le k\le r-1$,}
-\end{aligned}
-\]
-where we used the fact that $b_0=0$. If, instead, $m\le r$ and thus $n\ge r+1$, 
-then
-\[
-\begin{aligned}
-p_k-\sum_{j=1}^k a_{k-j}q_j&=a_k&&\text{for $1\le k\le m-1$,}\\
--\sum_{j=1}^r b_{j+k}q_j&=b_k&&\text{for $1\le k\le n-r-1$,}\\
--\sum_{j=1}^r b_jq_j&=-a_0,&&\\
-p_k-\sum_{j=k+1}^r b_{j-k}q_j&=0&&\text{for $1\le k\le r-1$.}
-\end{aligned}
-\]
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Using the SVD}
-Instead of requiring $q_0=1$, we can instead adapt the approach of Gonnet et 
-al.~\cite{GonnetEtAl2013} and use the SVD to solve the resulting underdetermined
-$2r\times(2r+1)$ linear system.  (We must still have $p_r=0$.) 
-
-If $m\ge r+1$, then $n=2r+1-m\le r$ so
-\[
-\begin{aligned}
-p_k-\sum_{j=0}^k a_{k-j}q_j&=0&&\text{for $0\le k\le r-1$,}\\
--\sum_{j=0}^r a_{k-j}q_j&=0&&\text{for $r\le k\le m-1$,}\\
-p_k-\sum_{j=k+1}^rb_{j-k}q_j&=0&&\text{for $r-n+1\le k\le r-1$,}
-\end{aligned}
-\]
-or in matrix form,
-\[
-\begin{bmatrix}A_{11}&A_{12}\\ A_{21}&A_{22}\\ A_{31}&A_{32}\end{bmatrix}
-\begin{bmatrix}\boldsymbol{p}\\ \boldsymbol{q}\end{bmatrix}=\boldsymbol{0},
-\qquad\boldsymbol{p}=\begin{bmatrix}p_0\\ p_1\\ \vdots\\ p_{r-1}\end{bmatrix},
-\qquad\boldsymbol{q}=\begin{bmatrix}q_0\\ q_1\\ \vdots\\ q_{r-1}\\q_r
-\end{bmatrix},
-\]
-where
-\[
-A_{11}=I_{r\times r},\qquad
-A_{21}=O_{(m-r)\times r},\qquad
-A_{31}=[O_{(n-1)\times(r-n)}\quad I_{(n-1)\times(n-1)}],
-\]
-with
-\begin{gather*}
-A_{12}=\kbordermatrix{
-      &1       &2       &\cdots&r     &r+1\\
-1     &-a_0    &0       &\cdots&0     &0\\
-2     &-a_1    &-a_0    &\cdots&0     &0\\
-\vdots&\vdots  &\vdots  &\ddots&\vdots&\vdots\\
-r     &-a_{r-1}&-a_{r-2}&\cdots&-a_0  &0
-},\\
-A_{22}=\kbordermatrix{
-      &1       &\cdots&r+1-n &\cdots&m-n      &\cdots&r+1\\
-1     &-a_r    &\cdots&-a_n  &\cdots&a_{m-r-1}&\cdots&-a_0\\
-\vdots&\vdots  &\ddots&\vdots&\ddots&\vdots   &\ddots&\vdots\\
-m-r   &-a_{m-1}&\cdots&-a_r  &\cdots&-a_n     &\cdots&-a_{m-r-1}
-},\\
-A_{32}=\kbordermatrix{
-      &1     &\cdots&r-n+1 &r-n+2 &r-n+3 &\cdots&r+1\\
-1     &0     &\cdots&0     &-b_1  &-b_2  &\cdots&-b_{n-1}\\
-2     &0     &\cdots&0     &0     &-b_1  &\cdots&-b_{n-2}\\
-\vdots&\vdots&\ddots&\vdots&\vdots&\vdots&\ddots&\vdots\\
-n-1   &0     &\cdots&0     &0     &0     &\cdots&-b_1
-}.
-\end{gather*}
-We compute the full SVD, $A=USV^\top$, and since the final column of the 
-$(2r)\times(2r+1)$ diagonal matrix~$S$ is a zero vector it follows that
-\[
-S\boldsymbol{e}_{2r+1}=\boldsymbol{0}.
-\]
-Thus, the unit vector 
-\[
-\boldsymbol{y}=V\boldsymbol{e}_{2r+1}=\text{column $2r+1$ of $V$}
-\]
-satisfies $A\boldsymbol{y}=USV^\top V\boldsymbol{e}_{2r+1}
-=US\boldsymbol{e}_{2r+1}=\boldsymbol{0}$.  For any desired scale 
-factor~$\mu\ne0$, we may put
-\[
-p_k=\mu y_{k+1}\quad\text{for $0\le k\le r-1$}
-\]
-and
-\[
-q_k=\mu y_{r+1+k}\quad\text{for $0\le k\le r$.}
-\]
-In particular, choosing $\mu=1/y_{r+1}$ ensures $q_0=1$.
-
-If $m\le r$ then $n=2r+1-m\ge r+1$ so
-\[
-\begin{aligned}
-p_k-\sum_{j=0}^k a_{k-j}q_j&=0&&\text{for $0\le k\le m-1$,}\\
--\sum_{j=0}^r b_{j-k}q_j&=0&&\text{for $-(r-m)\le k\le-1$,}\\
-p_k-\sum_{j=k+1}^r b_{j-k}q_j&=0&&\text{for $0\le k\le r-1$,} 
-\end{aligned}
-\]
-and hence the matrix blocks are now
-\[
-A_{11}=[I_{m\times m}\quad O_{m\times(r-m)}],\qquad 
-A_{21}=O_{(n-r-1)\times r},\qquad
-A_{31}=I_{r\times r}
-\]
-with
-\begin{gather*}
-A_{12}=\kbordermatrix{
-      &1       &2       &\cdots&m     &m+1   &\cdots&r+1\\
-1     &-a_0    &0       &\cdots&0     &0     &\cdots&0\\
-2     &-a_1    &-a_0    &\cdots&0     &0     &\cdots&0\\
-\vdots&\vdots  &\vdots  &\ddots&\vdots&\vdots&\ddots&\vdots\\
-m     &-a_{m-1}&-a_{m-2}&\cdots&-a_0  &0     &\cdots&0
-},\\
-A_{22}=\kbordermatrix{
-      &1       &2         &\cdots&r+1\\
-1     &-b_{r-m}&-b_{r-m+1}&\cdots&-b_{2r-m}\\
-\vdots&\vdots  &\vdots    &\ddots&\vdots\\
-r-m+1 &-b_1    &-b_2      &\cdots&-b_{r+1}\\
-r-m   &-b_2    &-b_3      &\cdots&-b_{r+2}
-}\\
-A_{32}=\kbordermatrix{
-      &1     &2     &3     &\cdots&r+1\\
-1     &0     &-b_1  &-b_2  &\cdots&-b_r\\
-2     &0     &0     &-b_1  &\cdots&-b_{r-1}\\
-\vdots&\vdots&\vdots&\vdots&\ddots&\vdots\\
-r     &0     &0     &0     &\cdots&-b_0
-}.
-\end{gather*}
 
 
 
