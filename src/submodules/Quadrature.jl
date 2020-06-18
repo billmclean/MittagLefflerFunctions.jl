@@ -94,7 +94,7 @@ function (E::MLQuad1{T})(x::T) where T <: AbstractFloat
 end
 
 function MLQuad2(α::T, β::T, N::Integer) where T <: AbstractFloat
-    if !(0≤α≤2)
+    if !(0≤α≤3)
         throw(DomainError(α, "α must lie between 0 and 2"))
     end
     qs = QSum(T, N)
@@ -151,7 +151,7 @@ function H(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
     if abs(ϵ) > sep
         return w^(α-β) / (w^α-x) - 1 / (α*ϵ*x^(β/α))
     else
-        return ( ψ1(α-β,ϵ) - (1+ϵ)^(α-β) * ψ2(α,ϵ)/ψ1(α,ϵ) ) / (α*x^(β/α))
+        return ( ψ1(α-β,ϵ) - ψ2(α,ϵ)/α ) / x^(β/α)
     end
 end
 
@@ -178,25 +178,32 @@ function MLQuad3(α::T, β::T, N::Integer) where T <: AbstractFloat
     return MLQuad3(α, β, qs)
 end
 
-function H₊(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+function H(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
     γ₊ = x^(1/α) * exp(complex(zero(T), π/α))
     ϵ₊ = ( w - γ₊ ) / γ₊
-    if abs(ϵ₊) > sep
-        return w^(α-β) / ( w^α + x ) - γ₊^(1-β) / ( α * ϵ₊ * γ₊^β )
-    else
-        return ( ψ1(α-β,ϵ₊) - (1+ϵ₊)^(α-β)*ψ2(α,ϵ₊) / ψ1(α,ϵ₊) ) / (α*γ₊^β)
-    end
-end
-
-function H₋(α::T, β::T, w::Complex{T}, x::T, sep::T
-               ) where T <: AbstractFloat
     γ₋= x^(1/α) * exp(complex(zero(T), -π/α))
     ϵ₋ = ( w - γ₋) / γ₋
-    if abs(ϵ₋) > sep
-        return w^(α-β) / ( w^α + x ) - γ₋^(1-β) / ( α * ϵ₋ * γ₋^β )
+    if abs(ϵ₊) < sep
+        numer  = ( ( w - γ₋ ) * ( ψ1(α-β, ϵ₊) - ψ2(α, ϵ₊)/α )
+                  - ψ1(α, ϵ₊) * γ₊ / α ) 
+        denom = γ₊^β * ψ1(α, ϵ₊) * ( 2w - γ₊ - γ₋ )  
+        H₊ = numer / denom
+        H₋ = ( γ₊^(1-β) * (1+ϵ₊)^(α-β) / ( ψ1(α,ϵ₊)*( 2w - γ₊ - γ₋ ) )
+              - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
+    elseif abs(ϵ₋) < sep
+        numer  = ( ( w - γ+ ) * ( ψ1(α-β, ϵ-) - ψ2(α, ϵ-)/α )
+                  - ψ1(α, ϵ-) * γ- / α ) 
+        denom = γ-^β * ψ1(α, ϵ-) * ( 2w - γ- - γ+ )  
+        H- = numer / denom
+        H+ = ( γ-^(1-β) * (1+ϵ-)^(α-β) / ( ψ1(α,ϵ-)*( 2w - γ₊ - γ₋ ) )
+              - γ+^(1-β) / ( α * ( w - γ+ ) ) )
     else
-        return ( ψ1(α-β,ϵ₋) - (1+ϵ₋)^(α-β)*ψ2(α,ϵ₋) / ψ1(α,ϵ₋) ) / (α*γ₋^β)
+        H₊ = ( w^(α-β) * ( w - γ₋ ) / ( ( w^α + x ) * ( 2w - γ₊ - γ₋ ) )
+              - γ₊^(1-β) / ( α * ( w - γ₊ ) ) )
+        H- = ( w^(α-β) * ( w - γ+ ) / ( ( w^α + x ) * ( 2w - γ- - γ+ ) )
+              - γ-^(1-β) / ( α * ( w - γ- ) ) )
     end
+    return H₊, H₋
 end
 
 function (E::MLQuad3{T})(x::T) where T <: AbstractFloat
