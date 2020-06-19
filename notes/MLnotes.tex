@@ -613,7 +613,7 @@ Let
 so that
 \[
 \frac{1}{w^\alpha+x}=\varphi(w;x)\biggl(
-    \frac{1}{w-\gamma_+}+\frac{1}{w-\gamma-}\biggr)
+    \frac{1}{w-\gamma_+}+\frac{1}{w-\gamma_-}\biggr)
 \]
 with
 \[
@@ -674,11 +674,12 @@ w^\alpha+x=-x(1+\epsilon_\pm)^\alpha+x
     =-x\epsilon_\pm[\alpha+\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]
 \]
 with
-\[
+\begin{gather*}
 w-\gamma_\pm=\gamma_\pm\epsilon_\pm,\qquad
-w-\gamma_\mp=\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm,\qquad
-2w-\gamma_+-\gamma_-=\gamma_+-\gamma_-+2\gamma_\pm\epsilon_\pm,
-\]
+2w-\gamma_+-\gamma_-=w-\gamma_\mp+\gamma_\pm\epsilon_\pm,\\
+w^{\alpha-\beta}=-x\gamma_\pm^{-\beta}
+    [1+\epsilon_\pm\psi_{1,\alpha-\beta}(\epsilon_\pm)].
+\end{gather*}
 We have
 \[
 H_\pm(w;x)=\frac{w^{\alpha-\beta}(w-\gamma_\mp)(w-\gamma_\pm)
@@ -687,39 +688,40 @@ H_\pm(w;x)=\frac{w^{\alpha-\beta}(w-\gamma_\mp)(w-\gamma_\pm)
 \]
 where the numerator equals
 \begin{align*}
-\gamma_\pm^{\alpha-\beta}&(1+\epsilon_\pm)^{\alpha-\beta}
-(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)(\gamma_\pm\epsilon_\pm)
+-x\gamma_\pm^{-\beta}&[1+\epsilon_\pm\psi_{1,\alpha-\beta}(\epsilon_\pm)]
+(w-\gamma_\mp)(\gamma_\pm\epsilon_\pm)
 +\alpha^{-1}\gamma_\pm^{1-\beta}
 x\epsilon_\pm[\alpha+\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\\
-&=x\gamma_\pm^{1-\beta}\epsilon_\pm\Bigl(-(1+\epsilon_\pm)^{\alpha-\beta}
-(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
-+[1+\alpha^{-1}\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\Bigr)\\
-&=x\gamma_\pm^{1-\beta}\epsilon_\pm^2\Bigl(
-(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+(w-\gamma_\mp+\gamma_\pm\epsilon_\pm)\\
+&=x\gamma_\pm^{1-\beta}\epsilon_\pm\Bigl(
+[1+\alpha^{-1}\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]
+(w-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+-[1+\epsilon_\pm\psi_{1,\alpha-\beta}(\epsilon_\pm)](w-\gamma_\mp)
+\Bigr)\\
+&=x\gamma_\pm^{1-\beta}\epsilon_\pm^2\Bigl((w-\gamma_\mp)
 [\alpha^{-1}\psi_{2,\alpha}(\epsilon_\pm)-\psi_{1,\alpha-\beta}(\epsilon_\pm)]
 +\gamma_\pm[1+\alpha^{-1}\epsilon_\pm\psi_{2,\alpha}(\epsilon_\pm)]\Bigr)
 \end{align*}
 and the denominator equals
 \[
 -x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
+(w-\gamma_\mp+\gamma_\pm\epsilon_\pm)
 (\gamma_\pm\epsilon_\pm)=-x\gamma_\pm\epsilon_\pm^2\psi_{1,\alpha}(\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
+(w-\gamma_\mp+\gamma_\pm\epsilon_\pm)
 \]
 so
 \[
-H_\pm(w;x)=\frac{(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+H_\pm(w;x)=\frac{(w-\gamma_\mp)
 [\psi_{1,\alpha-\beta}(\epsilon_\pm)-\alpha^{-1}\psi_{2,\alpha}(\epsilon_\pm)]
--\alpha^{-1}\psi_{1,\alpha}(\epsilon_\pm)\gamma_\pm}%
-{\gamma_\pm^\beta\psi_{1,\alpha}(\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\mp)}.
+-\gamma_\pm\alpha^{-1}\psi_{1,\alpha}(\epsilon_\pm)}%
+{\gamma_\pm^\beta\,\psi_{1,\alpha}
+(\epsilon_\pm)(w-\gamma_\mp-\gamma_\pm\epsilon_\pm)}.
 \]
 In particular,
 \[
-H_\pm(\gamma_pm;x)=\frac{(1+\alpha-2\beta)(\gamma_\pm-\gamma_\mp)-2\gamma_\pm}%
-{2\alpha\gamma_\pm^\beta(\gamma_\pm-\gamma_\mp)}.
+H_\pm(\gamma_\pm;x)
+=\frac{(1+\alpha-2\beta)(\gamma_\pm-\gamma_\mp)-2\gamma_\pm}%
+{\alpha\gamma_\pm^\beta(\gamma_\pm-\gamma_\mp)}.
 \]
 Similarly,
 \[
@@ -735,25 +737,25 @@ where the numerator equals
 +\alpha^{-1}\gamma_\mp^{1-\beta}x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
 (\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\\
 &=-x\epsilon_\pm\Bigl(\gamma_\pm^{1-\beta}(1+\epsilon_\pm)^{\alpha-\beta}
-(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+(w-\gamma_\mp)
 -\alpha^{-1}\gamma_\mp^{1-\beta}\psi_{1,\alpha}(\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)\Bigr)
+(2w-\gamma_+-\gamma_-)\Bigr)
 \end{align*}
 and the denominator equals
 \[
 -x\epsilon_\pm\psi_{1,\alpha}(\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
+(2w-\gamma_+-\gamma_-)(w-\gamma_\mp)
 \]
 so
-\[
-H_\mp(w;x)=\frac{\gamma_\pm^{1-\beta}(1+\epsilon_\pm)^{\alpha-\beta}
-(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)
--\alpha^{-1}\gamma_\mp^{1-\beta}\psi_{1,\alpha}(\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)}%
-{\psi_{1,\alpha}(\epsilon_\pm)(\gamma_\pm-\gamma_\mp+2\gamma_\pm\epsilon_\pm)
-(\gamma_\pm-\gamma_\mp+\gamma_\pm\epsilon_\pm)}.
-\]
+\begin{align*}
+H_\mp(w;x)&=\frac{\gamma_\pm^{1-\beta}(1+\epsilon_\pm)^{\alpha-\beta} 
+(w-\gamma_\mp)-\alpha^{-1}\gamma_\mp^{1-\beta}\psi_{1,\alpha}(\epsilon_\pm)
+(2w-\gamma_+-\gamma_-)}%
+{\psi_{1,\alpha}(\epsilon_\pm)(2w-\gamma_+-\gamma_-)(w-\gamma_\mp)}\\
+&=\frac{\gamma_\pm^{1-\beta}(1+\epsilon_\pm)^{\alpha-\beta}}%
+{\psi_{1,\alpha}(\epsilon_\pm)(2w-\gamma_+-\gamma_-)}
+-\frac{\alpha^{-1}\gamma_\mp^{1-\beta}}{w-\gamma_\mp}.
+\end{align*}
 In particular,
 \[
 H_\mp(\gamma_\pm;x)=\frac{\gamma_\pm^{1-\beta}-\gamma_\mp^{1-\beta}}%

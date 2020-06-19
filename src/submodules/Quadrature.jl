@@ -145,13 +145,13 @@ function ψ2(α::T, ϵ::Complex{T}, N=100) where T <: AbstractFloat
     return s
 end
 
-function H(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+function f2(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
     xa = x^(1/α)
     ϵ = ( w - xa ) / xa
     if abs(ϵ) > sep
         return w^(α-β) / (w^α-x) - 1 / (α*ϵ*x^(β/α))
     else
-        return ( ψ1(α-β,ϵ) - ψ2(α,ϵ)/α ) / x^(β/α)
+        return ( ψ1(α-β, ϵ) - ψ2(α, ϵ)/α ) / ( x^(β/α) * ψ1(α, ϵ) )
     end
 end
 
@@ -164,7 +164,7 @@ function (E::MLQuad2{T})(x::T) where T <: AbstractFloat
     else
         s = zero(T)
         for n in axes(w, 1)
-            s += real( C[n] * H(α, β, w[n], x, sep) )
+            s += real( C[n] * f2(α, β, w[n], x, sep) )
         end
         return ( x^((1-β)/α) * exp(x^(1/α)) / α ) + A * s
     end
@@ -178,32 +178,32 @@ function MLQuad3(α::T, β::T, N::Integer) where T <: AbstractFloat
     return MLQuad3(α, β, qs)
 end
 
-function H(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+function f3(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
     γ₊ = x^(1/α) * exp(complex(zero(T), π/α))
     ϵ₊ = ( w - γ₊ ) / γ₊
     γ₋= x^(1/α) * exp(complex(zero(T), -π/α))
     ϵ₋ = ( w - γ₋) / γ₋
     if abs(ϵ₊) < sep
         numer  = ( ( w - γ₋ ) * ( ψ1(α-β, ϵ₊) - ψ2(α, ϵ₊)/α )
-                  - ψ1(α, ϵ₊) * γ₊ / α ) 
-        denom = γ₊^β * ψ1(α, ϵ₊) * ( 2w - γ₊ - γ₋ )  
-        H₊ = numer / denom
-        H₋ = ( γ₊^(1-β) * (1+ϵ₊)^(α-β) / ( ψ1(α,ϵ₊)*( 2w - γ₊ - γ₋ ) )
+                  - γ₊ * ψ1(α, ϵ₊)/α ) 
+        denom = γ₊^β * ψ1(α, ϵ₊) * ( w - γ₋ + γ₊*ϵ₊ )  
+        f₊ = numer / denom
+        f₋ = ( γ₊^(1-β) * (1+ϵ₊)^(α-β) / ( ψ1(α,ϵ₊)*( 2w - γ₊ - γ₋ ) )
               - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
     elseif abs(ϵ₋) < sep
-        numer  = ( ( w - γ+ ) * ( ψ1(α-β, ϵ-) - ψ2(α, ϵ-)/α )
-                  - ψ1(α, ϵ-) * γ- / α ) 
-        denom = γ-^β * ψ1(α, ϵ-) * ( 2w - γ- - γ+ )  
-        H- = numer / denom
-        H+ = ( γ-^(1-β) * (1+ϵ-)^(α-β) / ( ψ1(α,ϵ-)*( 2w - γ₊ - γ₋ ) )
-              - γ+^(1-β) / ( α * ( w - γ+ ) ) )
-    else
-        H₊ = ( w^(α-β) * ( w - γ₋ ) / ( ( w^α + x ) * ( 2w - γ₊ - γ₋ ) )
+        numer  = ( ( w - γ₊ ) * ( ψ1(α-β, ϵ₋) - ψ2(α, ϵ₋)/α ) 
+                  - ψ1(α, ϵ₋) * γ₋ / α )
+        denom = γ₋^β * ψ1(α, ϵ₋) * ( 2w - γ₋ - γ₊ )  
+        f₋ = numer / denom
+        f₊ = ( γ₋^(1-β) * (1+ϵ₋)^(α-β) / ( ψ1(α,ϵ₋)*( 2w - γ₊ - γ₋ ) )
               - γ₊^(1-β) / ( α * ( w - γ₊ ) ) )
-        H- = ( w^(α-β) * ( w - γ+ ) / ( ( w^α + x ) * ( 2w - γ- - γ+ ) )
-              - γ-^(1-β) / ( α * ( w - γ- ) ) )
+    else
+        f₊ = ( w^(α-β) * ( w - γ₋ ) / ( ( w^α + x ) * ( 2w - γ₊ - γ₋ ) )
+              - γ₊^(1-β) / ( α * ( w - γ₊ ) ) )
+        f₋ = ( w^(α-β) * ( w - γ₊ ) / ( ( w^α + x ) * ( 2w - γ₋ - γ₊ ) )
+              - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
     end
-    return H₊, H₋
+    return f₊, f₋
 end
 
 function (E::MLQuad3{T})(x::T) where T <: AbstractFloat
@@ -215,11 +215,11 @@ function (E::MLQuad3{T})(x::T) where T <: AbstractFloat
     else
         s = zero(T)
         for n in axes(w, 1)
-            s += real( C[n] * ( H₊(α, β, w[n], x, sep) 
-                              + H₋(α, β, w[n], x, sep) ) ) / 2
+            f₊, f₋ = f3(α, β, w[n], x, sep)
+            s += real( C[n] * ( f₊ + f₋ ) )
         end
-        sum_residues = ( ( x^((1-β)/α) / α ) * exp(x^(1/α)*cos(π/α))
-                 * cos( π*(1-β)/α + x^(1/α)*sin(π/α) ) )
+        sum_residues = (2/α) * ( x^((1-β)/α) * exp(x^(1/α)*cos(π/α))
+                 * cos( π*(1-β)/α + x^(1/α)*sinpi(1/α) ) )
         return sum_residues + A * s
     end
 end
