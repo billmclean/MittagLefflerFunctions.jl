@@ -62,126 +62,45 @@ end
 Evaluate the Mittag-Leffler function E_αβ(z) with accuracy 10^(-p).
 """
 function mlf(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
-    ten = parse(T, "10")
-    if β < 0 
-        rc = ( -2*log( ten^(-p)*π / (6*(abs(β)+2)*(2*abs(β))^(abs(β))) ) )^α
-    else  
-        rc = ( -2*log( ten^(-p)*π / 6 ) )^α
-    end
-    r0 = max(one(T), 2*abs(z), rc)
+    r0 = radius(α, β, z, p)
     if α == one(T) && β == one(T)
         E = exp(z)
-        show_case(1)
     else
         if (   ( α < 1 && abs(z) ≤ 1 ) 
             || ( ( 1 ≤ α < 2 ) && abs(z) ≤ floor(20/(2.1-α)^(5.5-2α))) 
             || (  α ≥ 2 && abs(z) ≤ 50 ) )
-            oldsum=0
-            k = 0
-            powz = Complex(one(T),zero(T))
-            while β + k*α ≤ 0 
-                powz *= z # = z^k
-                k += 1
-            end
-            newsum = powz * rΓ(β+k*α)
-            while newsum != oldsum
-                oldsum = newsum
-                k += 1
-                powz *= z
-                term = powz * rΓ(β+k*α)
-                newsum += term
-                k += 1
-                powz *= z
-                term = powz * rΓ(β+k*α)
-                newsum += term
-            end
-            E = newsum
-            show_case(2)
+            E = mlf1(α, β, z, p)
         else
             if  α<=1 && abs(z) ≤ floor(5*α+ten) 
                 if (   ( abs(angle(z)) > π*α ) 
                     && ( abs(abs(angle(z)) - (π*α)) > ten^(-p) ) )
                     if β ≤ 1
-                        E = Romberg(zero(T), r0, p) do r
-                            return K(r, α, β, z)
-                        end
-                        show_case(3)
+                        E = mlf2(α, β, z, p, r0)
                     else
-                        ϵ = one(T)
-                        E1 = Romberg(ϵ, r0, p) do r
-                            return K(r, α, β, z) 
-                        end
-                        E2 = Romberg(-π*α, π*α, p) do r
-                            return P(r, α, β, z, ϵ) 
-                        end
-                        E = E1 + E2
-                        show_case(4)
+                        E = mlf3(α, β, z, p, r0)
                     end
                 elseif (   abs(angle(z)) < π*α 
                         && abs(abs(angle(z))-(π*α)) > ten^(-p) )
                     if β <= 1
-                        E1 = Romberg(zero(T), r0, p) do r
-                            return K(r, α, β, z)
-                        end
-                        E = E1 + z^((1-β)/α) * exp(z^(1/α)) / α 
-                        show_case(5)
+                        E = mlf4(α, β, z, p, r0)
                     else
-                        ϵ = abs(z)/2
-                        E1 = Romberg(ϵ, r0, p) do r
-                            return K(r, α, β, z)
-                        end
-                        E2 = Romberg(-π*α, π*α, p) do r
-                            return P(r, α, β, z, ϵ)
-                        end
-                        E = E1 + E2 + (z^((1-β)/α)) * (exp(z^(1/α))/α)
-                        show_case(6)
+                        E = mlf5(α, β, z, p, r0)
                     end
                 else
-                    ϵ = abs(z) + one(T)/2
-                    E1 = Romberg(ϵ, r0, p) do r
-                        return K(r, α, β, z)
-                    end
-                    E2 = Romberg(-π*α, π*α, p) do r
-                        return P(r, α, β, z, ϵ) 
-                    end
-                    E = E1 + E2
-                    show_case(7)
+                    E = mlf6(α, β, z, p, r0)
                 end
             else
                 if α ≤ 1
                     if abs(angle(z)) < (π*α/2+min(π,π*α))/2
-                        newsum = z^((1-β)/α) * exp(z^(1/α))/α
-                        powz = Complex(one(T), zero(T))
-                        for k=1:floor(Int64, p/log10(abs(z)))
-                            powz /= z # = z^(-k)
-                            newsum -= powz * rΓ(β-k*α)
-                        end
-                        E = newsum
-                        show_case(8)
+                        E = mlf7(α, β, z, p)
                     else
-                        newsum = zero(Complex{T})
-                        powz = Complex(one(T), zero(T))
-                        for k=1:floor(Int64, p/log10(abs(z)))
-                            powz /= z # = z^(-k)
-                            newsum -= powz * rΓ(β-k*α)
-                        end
-                        E = newsum
-                        show_case(9)
+                        E = mlf8(α, β, z, p)
                     end
                 else
                     if α ≥ 2
-                        m = floor(Int64, α/2)
-                        s = zero(Complex{T})
-                        for h = 0:m
-                            zn = z^(one(T)/(m+1)) * exp_i(2π*h/(m+1))
-                            s += mlf(α/(m+1), β, zn, p)
-                        end
-                        E = (one(T)/(m+1)) * s
-                        show_case(10)
+                        E = mlf9(α, β, z, p)
                     else
-                        E = ( mlf(α/2, β, sqrt(z), p)
-                            + mlf(α/2, β, -sqrt(z), p) ) / 2
-                        show_case(11)
+                        E = mlf10(α, β, z, p)
                     end
                 end
             end
@@ -193,6 +112,136 @@ end
 function mlf(α::T, β::T, x::T, p::Integer) where T <: AbstractFloat
     z = Complex(x, zero(T))
     return real(mlf(α, β, z, p))
+end
+
+function radius(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
+    ten = parse(T, "10")
+    if β < 0 
+        rc = ( -2*log( ten^(-p)*π / (6*(abs(β)+2)*(2*abs(β))^(abs(β))) ) )^α
+    else  
+        rc = ( -2*log( ten^(-p)*π / 6 ) )^α
+    end
+    r0 = max(one(T), 2*abs(z), rc)
+    return r0
+end
+
+function mlf1(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
+    oldsum=0
+    k = 0
+    powz = Complex(one(T),zero(T))
+    while β + k*α ≤ 0 
+        powz *= z # = z^k
+        k += 1
+    end
+    newsum = powz * rΓ(β+k*α)
+    while newsum != oldsum
+        oldsum = newsum
+        k += 1
+        powz *= z
+        term = powz * rΓ(β+k*α)
+        newsum += term
+        k += 1
+        powz *= z
+        term = powz * rΓ(β+k*α)
+        newsum += term
+    end
+    E = newsum
+    return E
+end
+
+function mlf2(α::T, β::T, z::Complex{T}, p::Integer,
+              r0::T) where T <: AbstractFloat
+    E = Romberg(zero(T), r0, p) do r
+        return K(r, α, β, z)
+    end
+    return E
+end
+
+function mlf3(α::T, β::T, z::Complex{T}, p::Integer,
+              r0::T) where T <: AbstractFloat
+    ϵ = one(T)
+    E1 = Romberg(ϵ, r0, p) do r
+        return K(r, α, β, z) 
+    end
+    E2 = Romberg(-π*α, π*α, p) do r
+        return P(r, α, β, z, ϵ) 
+    end
+    E = E1 + E2
+    return E
+end
+
+function mlf4(α::T, β::T, z::Complex{T}, p::Integer,
+              r0::T) where T <: AbstractFloat
+    E1 = Romberg(zero(T), r0, p) do r
+        return K(r, α, β, z)
+    end
+    E = E1 + z^((1-β)/α) * exp(z^(1/α)) / α 
+    return E
+end
+
+function mlf5(α::T, β::T, z::Complex{T}, p::Integer,
+              r0::T) where T <: AbstractFloat
+    ϵ = abs(z)/2
+    E1 = Romberg(ϵ, r0, p) do r
+        return K(r, α, β, z)
+    end
+    E2 = Romberg(-π*α, π*α, p) do r
+        return P(r, α, β, z, ϵ)
+    end
+    E = E1 + E2 + (z^((1-β)/α)) * (exp(z^(1/α))/α)
+    return E
+end
+
+function mlf6(α::T, β::T, z::Complex{T}, p::Integer,
+              r0::T) where T <: AbstractFloat
+    ϵ = abs(z) + one(T)/2
+    E1 = Romberg(ϵ, r0, p) do r
+        return K(r, α, β, z)
+    end
+    E2 = Romberg(-π*α, π*α, p) do r
+        return P(r, α, β, z, ϵ) 
+    end
+    E = E1 + E2
+    return E
+end
+
+function mlf7(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
+    newsum = z^((1-β)/α) * exp(z^(1/α))/α
+    powz = Complex(one(T), zero(T))
+    for k=1:floor(Int64, p/log10(abs(z)))
+        powz /= z # = z^(-k)
+        newsum -= powz * rΓ(β-k*α)
+    end
+    E = newsum
+    return E
+end
+
+function mlf8(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
+    newsum = zero(Complex{T})
+    powz = Complex(one(T), zero(T))
+    for k=1:floor(Int64, p/log10(abs(z)))
+        powz /= z # = z^(-k)
+        newsum -= powz * rΓ(β-k*α)
+    end
+    E = newsum
+    return E
+end
+
+function mlf9(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
+    m = floor(Int64, α/2)
+    s = zero(Complex{T})
+    for h = 0:m
+        zn = z^(one(T)/(m+1)) * exp_i(2π*h/(m+1))
+        s += mlf(α/(m+1), β, zn, p)
+    end
+    E = (one(T)/(m+1)) * s
+    return E
+end
+
+function mlf10(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
+    E = ( mlf(α/2, β, sqrt(z), p)
+        + mlf(α/2, β, -sqrt(z), p) ) / 2
+    return E
 end
 
 end # module
