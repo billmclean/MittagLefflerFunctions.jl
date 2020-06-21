@@ -8,54 +8,6 @@ using ..MittagLefflerFunctions: rΓ
 
 export mlf
 
-function exp_i(z::Complex{T}) where T <: AbstractFloat
-    return exp(Complex(zero(T),z))
-end
-
-function exp_i(t::T) where T <: AbstractFloat
-    return exp(Complex(zero(T),t))
-end
-
-function K(r::T, α::T, β::T, z::Complex{T}) where T <: AbstractFloat
-    return r^((1-β)/α) * exp(-r^(1/α)) * ( (r*sinpi(1-β)-z*sinpi(1-β+α))
-                                          /(π*α*(r^2-2*r*z*cospi(α)+z^2)) )
-end
-
-function P(r::T, α::T, β::T, z::Complex{T}, ϵ::T) where T <: AbstractFloat
-    w = ϵ^(1/α) * sin(r/α) + r * ( 1 + (1-β)/α )
-    numer =  exp((ϵ^(1/α)) * cos(r/α)) * exp_i(w)
-    return ( ϵ^(1+(1-β)/α) / (2π*α) ) * numer / ( ϵ*exp_i(r) - z )
-end
-
-function Romberg(f::Function, a::T, b::T, order=6) where T <: AbstractFloat
-    R = zeros(Complex{T}, 2, order)
-    h = b - a
-    R[1,1] = ( h/2 ) * ( f(a) + f(b) )
-    ipower = 1
-    for i = 2:order
-        s = zero(Complex{T})
-        for j = 1:ipower
-            s += f( a + (2j-1)*h/2 )
-        end
-        R[2,1] = ( R[1,1] + h * s ) / 2
-        pow4 = one(T)
-        for k = 1:i-1
-            pow4 *= 4
-            R[2,k+1] = ( pow4 * R[2,k] - R[1,k] ) / ( pow4 - 1 )
-        end
-        for j = 0:i-1
-            R[1,j+1] = R[2,j+1]
-        end
-        ipower *= 2
-        h /= 2
-    end
-    return R[1,order]
-end
-
-function show_case(n::Integer)
-    println("\tCase $n")
-end
- 
 """
     mlf(α, β, z, p)
 
@@ -242,6 +194,50 @@ function mlf10(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
     E = ( mlf(α/2, β, sqrt(z), p)
         + mlf(α/2, β, -sqrt(z), p) ) / 2
     return E
+end
+
+function exp_i(z::Complex{T}) where T <: AbstractFloat
+    return exp(Complex(zero(T),z))
+end
+
+function exp_i(t::T) where T <: AbstractFloat
+    return exp(Complex(zero(T),t))
+end
+
+function K(r::T, α::T, β::T, z::Complex{T}) where T <: AbstractFloat
+    return r^((1-β)/α) * exp(-r^(1/α)) * ( (r*sinpi(1-β)-z*sinpi(1-β+α))
+                                          /(π*α*(r^2-2*r*z*cospi(α)+z^2)) )
+end
+
+function P(r::T, α::T, β::T, z::Complex{T}, ϵ::T) where T <: AbstractFloat
+    w = ϵ^(1/α) * sin(r/α) + r * ( 1 + (1-β)/α )
+    numer =  exp((ϵ^(1/α)) * cos(r/α)) * exp_i(w)
+    return ( ϵ^(1+(1-β)/α) / (2π*α) ) * numer / ( ϵ*exp_i(r) - z )
+end
+
+function Romberg(f::Function, a::T, b::T, order=6) where T <: AbstractFloat
+    R = zeros(Complex{T}, 2, order)
+    h = b - a
+    R[1,1] = ( h/2 ) * ( f(a) + f(b) )
+    ipower = 1
+    for i = 2:order
+        s = zero(Complex{T})
+        for j = 1:ipower
+            s += f( a + (2j-1)*h/2 )
+        end
+        R[2,1] = ( R[1,1] + h * s ) / 2
+        pow4 = one(T)
+        for k = 1:i-1
+            pow4 *= 4
+            R[2,k+1] = ( pow4 * R[2,k] - R[1,k] ) / ( pow4 - 1 )
+        end
+        for j = 0:i-1
+            R[1,j+1] = R[2,j+1]
+        end
+        ipower *= 2
+        h /= 2
+    end
+    return R[1,order]
 end
 
 end # module
