@@ -52,7 +52,7 @@ function pade_matrix(α::T, β::T,
         pow = -pow
     end
     b[0] = zero(T)
-    pow = one(T)
+    pow = -one(T)
     for k = 1:n-1
         pow = -pow
         b[k] = pow * rΓ(β-k*α)
