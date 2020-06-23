@@ -14,6 +14,7 @@ export mlf
 Evaluate the Mittag-Leffler function E_αβ(z) with accuracy 10^(-p).
 """
 function mlf(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
+    ten = parse(T, "10.0")
     r0 = radius(α, β, z, p)
     if α == one(T) && β == one(T)
         E = exp(z)
@@ -67,7 +68,7 @@ function mlf(α::T, β::T, x::T, p::Integer) where T <: AbstractFloat
 end
 
 function radius(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
-    ten = parse(T, "10")
+    ten = parse(T, "10.0")
     if β < 0 
         rc = ( -2*log( ten^(-p)*π / (6*(abs(β)+2)*(2*abs(β))^(abs(β))) ) )^α
     else  
