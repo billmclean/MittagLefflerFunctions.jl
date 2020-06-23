@@ -71,11 +71,41 @@ function QSum(::Type{T}, N) where T <: AbstractFloat
     return QSum(w, C, A)
 end
 
-function MLQuad1(α::T, β::T, N::Integer) where T <: AbstractFloat
+"""
+    QSumP(T, N)
+
+
+Construct quadrature sum using an optimised parabolic contour.
+"""
+function QSumP(::Type{T}, N) where T <: AbstractFloat
+    fN = convert(T, N)
+    h = 3 / fN
+    μ = π * fN / 12
+    w = OffsetArray{Complex{T}}(undef, 0:N)
+    C = OffsetArray{Complex{T}}(undef, 0:N)
+    w[0] = Complex(μ, 0)
+    C[0] = Complex(exp(μ)/2, 0)
+    for n = 1:N
+        one_plus_iun = Complex(1, n*h)
+        w[n] = μ * one_plus_iun^2
+        C[n] = exp(w[n]) * one_plus_iun
+    end
+    A = 1 / 2
+    return QSum(w, C, A)
+end
+
+function MLQuad1(α::T, β::T, N::Integer,
+                contour::Symbol) where T <: AbstractFloat
     if !(0≤α≤1)
         throw(DomainError(α, "α must lie between 0 and 1"))
     end
-    qs = QSum(T, N)
+    if contour == :hyperbola
+        qs = QSum(T, N)
+    elseif contour == :parabola
+        qs = QSumP(T, N)
+    else
+        throw(ArgumentError(contour, "unrecognised"))
+    end
     return MLQuad1(α, β, qs)
 end
 

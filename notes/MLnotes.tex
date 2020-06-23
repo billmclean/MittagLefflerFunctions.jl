@@ -133,10 +133,10 @@ M(x,v)=\int_{-\infty}^\infty\bigl|\exp\bigl(w(u+iv)\bigr)
     \quad\text{for $-\phi<v<\frac{\pi}{2}$,}
 \]
 we have the error bound~\cite[Theorem~2.1]{WeidemanTrefethen2007}
-\[
+\begin{equation}\label{eq: Qh error}
 |Q_h(x)-E_{\alpha,\beta}(-x)|\le\frac{M(x,r)}{\exp(2\pi r/h)-1}
     +\frac{M(x,-s)}{\exp(2\pi s/h)-1}
-\]
+\end{equation}
 for $0<s<\phi$ and $0<r<\pi/2-\phi$.  For the finite sum,
 \begin{equation}\label{eq: Q_hN}
 Q_{h,N}(x)=\frac{h}{2\pi i}\sum_{n=-N}^N e^{w_n}F(w_n,x)w'_n,
@@ -762,6 +762,60 @@ H_\mp(\gamma_\pm;x)=\frac{\gamma_\pm^{1-\beta}-\gamma_\mp^{1-\beta}}%
 {\alpha(\gamma_\pm-\gamma_\mp)}=\frac{1}{x^{\beta/\alpha}}\,
 \frac{\sin\pi(1-\beta)/\alpha}{\alpha\sin\pi/\alpha}.
 \]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Parabolic contour}
+Consider $\mathcal{C}$ of the form
+\[
+w(u)=\mu(iu+1)^2\quad\text{for $-\infty<u<\infty$,}
+\]
+with $\mu>0$.  It follows that
+\begin{align*}
+\Re w(u+iv)&=\mu\bigl((1-v)^2-u^2\bigr),\\
+\Im w(u+iv)&=2\mu(1-v)u,
+\end{align*}
+and so $\Im w(u+iv)\to-\infty$ as~$|u|\to\infty$ provided $v<1$.  Thus, we can 
+apply the error bound~\eqref{eq: Qh error} for $r=1-\epsilon$ and $s>0$.
+Neglecting $\epsilon$, we deduce that the error is of order
+\[
+\exp(-2\pi/h)+\exp\bigl(\mu(1+s)^2-2\pi s/h\bigr)
+    +\exp\bigl(\mu(1-(Nh)^2)\bigr).
+\]
+The exponent
+\[
+\mu(1+s)^2-\frac{2\pi s}{h}=\mu\bigg[\biggl(1+s-\frac{\pi}{\mu h}\biggr)^2
+    +\frac{2\pi}{\mu h}-\biggl(\frac{\pi}{\mu h}\biggr)^2\biggr]
+\]
+is minimised if
+\[
+s=1-\frac{\pi}{\mu h},
+\]
+and using this value we balance the three error terms by satisfying
+\[
+\frac{-2\pi}{h}=\frac{2\pi}{h}-\frac{\pi^2}{\mu h^2}=\mu\bigl(1-(Nh)^2\bigr).
+\]
+The left-hand equation yields $\mu h=\pi/4$ so $1-(Nh)^2=-2\pi/(\mu h)=-8$
+and hence $Nh=3$.  Thus, for a given~$N$, the optimal quadrature parameters are
+\[
+h_\star=\frac{3}{N}\quad\text{and}\quad\mu_\star=\frac{\pi}{12}\,N,
+\]
+yielding an error of order $\exp(-2\pi/h_\star)=\exp(-2\pi N/3)$ or
+$\exp(2\pi/3)^N\approx8.12^N$.
+
+Since $w'(u)=2\mu i(iu+1)$ we see that
+\[
+\frac{hw'(u)}{2\pi i}=\frac{\mu h}{\pi}(iu+1)=\frac{1}{4}(1+iu)
+\]
+and so
+\begin{align*}
+Q_{h,N}(x)&=\frac{1}{4}\sum_{n=-N}^Ne^{w_n}f(w_n;x)(1+inh)\\
+    &=\frac{1}{2}\biggl(\tfrac12e^{w_0}f(w_0;x)+\sum_{n=1}^N\Re\bigl(
+    e^{w_n}f(w_n;x)(1+inh)\bigr)\biggr).
+\end{align*}
+
+
+
+
+
 
 
 
