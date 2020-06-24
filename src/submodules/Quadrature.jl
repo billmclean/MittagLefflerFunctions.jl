@@ -22,6 +22,17 @@ struct QSum{T<:AbstractFloat}
 end
 
 """
+`MLQuad` holds data for computing the Mittag--Leffler function `Eαβ(z)`
+when `0<α<1`.
+"""
+struct MLQuad{T<:AbstractFloat}
+    α::T
+    β::T
+    qs::QSum{T}
+    sep::T
+end
+
+"""
 `MLQuad1` holds data for computing the Mittag--Leffler function `Eαβ(-x)`
 when `x≥0` and `0<α<1`.
 """
@@ -51,7 +62,12 @@ struct MLQuad3{T<:AbstractFloat}
     qs::QSum{T}
 end
 
-function QSum(::Type{T}, N) where T <: AbstractFloat
+"""
+    QSumH(T, N)
+
+Construct quadrature sum using an optimised hyperbolic contour.
+"""
+function QSumH(::Type{T}, N) where T <: AbstractFloat
     ϕ = parse(T, ϕ_opt)
     a, b = coef_h(ϕ), coef_μ(ϕ)
     h = a / N
@@ -60,20 +76,18 @@ function QSum(::Type{T}, N) where T <: AbstractFloat
     C = OffsetArray{Complex{T}}(undef, 0:N)
     w0 = μ * ( 1 - sin(ϕ) )
     w[0] = Complex(w0, 0)
-    C[0] = Complex(exp(w0) * cos(ϕ) / 2, 0)
-    for n = 1:N
+    for n = 0:N
         un = n * h
         iunmϕ = Complex(-ϕ, un)
         w[n] = μ * ( 1 + sin(iunmϕ) )
         C[n] = exp(w[n]) * cos(iunmϕ)
     end
-    A = a * b / π
+    A = ( 4ϕ - π ) / 2
     return QSum(w, C, A)
 end
 
 """
     QSumP(T, N)
-
 
 Construct quadrature sum using an optimised parabolic contour.
 """
@@ -94,17 +108,85 @@ function QSumP(::Type{T}, N) where T <: AbstractFloat
     return QSum(w, C, A)
 end
 
+function MLQuad(α::T, β::T, N::Integer,
+                contour::Symbol, sep::T) where T <: AbstractFloat
+    if α < 0
+        throw(DomainError(α, "α must be non-negative"))
+    end
+    if contour == :hyperbola
+        qs = QSumH(T, N)
+    elseif contour == :parabola
+        qs = QSumP(T, N)
+    else
+        throw(ArgumentError(contour, "unrecognised"))
+    end
+    return MLQuad(α, β, qs, sep)
+end
+
+function (E::MLQuad{T})(z::Complex{T}) where T <: AbstractFloat
+    return mlfunc(E.α, E.β, z, E.qs, E.sep)
+end
+
+function mlfunc(α::T, β::T, z::Complex{T}, 
+                qs::QSum{T}, sep::T) where T <: AbstractFloat
+    w, C, A = qs.w, qs.C, qs.A
+    N = axes(w, 1)[end]
+    m = ceil(Int64, α)
+    fm = ceil(α)
+    r, θ = abs(z), angle(z)
+    if m == 1
+        if abs(θ) > α*π
+            s = C[0] * w[0]^(α-β) / ( w[0]^α - z )
+            for n = 1:N
+                f_wn = w[n]^(α-β) / ( w[n]^α - z ) 
+                f_wnbar = conj(w[n])^(α-β) / ( conj(w[n])^α - z )
+                s += C[n] * f_wn + conj(C[n]) * f_wnbar
+            end
+            Eαβ = A * s
+        else
+            γ = r^(1/α) * exp(Complex(zero(T), θ/α))
+            s = C[0] * f(α, β, w[0], z, sep)
+            for n = 1:N
+                s += (        C[n] * f(α, β, w[n], z, sep)
+                      + conj(C[n]) * f(α, β, conj(w[n]), z, sep) )
+            end
+            Eαβ = γ^(1-β) * exp(γ) / α + A * s
+        end
+    else
+        s = zero(T)
+        for k = 0:m-1
+            mth_root = z^(one(T)/m)
+            phase = exp(Complex(zero(T), 2π*k/fm))
+            s += mlfunc(α/m, β, mth_root*phase, qs, sep)
+        end
+        Eαβ = s / m
+    end
+    return Eαβ
+end
+
+function f(α::T, β::T, w::Complex{T}, z::Complex{T},
+           sep::T) where T <: AbstractFloat
+    r, θ = abs(z), angle(z)
+    γ = r^(1/α) * exp(Complex(zero(T), θ/α))
+    ϵ = ( w - γ ) / γ
+    if abs(ϵ) > sep
+        return w^(α-β) / (w^α-z) - 1 / (α*ϵ*γ^β)
+    else
+        return ( ψ1(α-β, ϵ) - ψ2(α, ϵ)/α ) / ( γ^β * ψ1(α, ϵ) )
+    end
+end
+
 function MLQuad1(α::T, β::T, N::Integer,
                 contour::Symbol) where T <: AbstractFloat
     if !(0≤α≤1)
         throw(DomainError(α, "α must lie between 0 and 1"))
     end
     if contour == :hyperbola
-        qs = QSum(T, N)
+        qs = QSumH(T, N)
     elseif contour == :parabola
         qs = QSumP(T, N)
     else
-        throw(ArgumentError(contour, "unrecognised"))
+        throw(ArgumentError("contour name unrecognised"))
     end
     return MLQuad1(α, β, qs)
 end
@@ -115,20 +197,119 @@ function (E::MLQuad1{T})(x::T) where T <: AbstractFloat
     if x < 0
         throw(DomainError(x, "argument must be greater than or equal to zero"))
     else
+        N = axes(w, 1)[end]
         s = zero(T)
-        for n in axes(w, 1)
+        for n = 1:N
             s += real( C[n] * w[n]^(α-β) / ( x + w[n]^α ) )
         end
-        return A * s
+        return A * ( real( C[0] * w[0]^(α-β) / ( x + w[0]^α ) ) + 2s )
     end
 end
 
-function MLQuad2(α::T, β::T, N::Integer) where T <: AbstractFloat
-    if !(0≤α≤3)
+function MLQuad2(α::T, β::T, N::Integer,
+                contour::Symbol) where T <: AbstractFloat
+    if !(0≤α≤2)
         throw(DomainError(α, "α must lie between 0 and 2"))
     end
-    qs = QSum(T, N)
+    if contour == :hyperbola
+        qs = QSumH(T, N)
+    elseif contour == :parabola
+        qs = QSumP(T, N)
+    else
+        throw(ArgumentError("contour name unrecognised"))
+    end
     return MLQuad2(α, β, qs)
+end
+
+function f2(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+    xa = x^(1/α)
+    ϵ = ( w - xa ) / xa
+    if abs(ϵ) > sep
+        return w^(α-β) / (w^α-x) - 1 / (α*ϵ*x^(β/α))
+    else
+        return ( ψ1(α-β, ϵ) - ψ2(α, ϵ)/α ) / ( x^(β/α) * ψ1(α, ϵ) )
+    end
+end
+
+function (E::MLQuad2{T})(x::T) where T <: AbstractFloat
+    α, β, qs = E.α, E.β, E.qs
+    w, C, A = qs.w, qs.C, qs.A
+    sep = 1 / parse(T, "4")
+    if x < 0
+        throw(DomainError(x, "argument must be greater than or equal to zero"))
+    else
+        N = axes(w, 1)[end]
+        s = zero(T)
+        for n = 1:N
+            s += real( C[n] * f2(α, β, w[n], x, sep) )
+        end
+        s = real( C[0] * f2(α, β, w[0], x, sep) ) + 2s
+        return ( x^((1-β)/α) * exp(x^(1/α)) / α ) + A * s
+    end
+end
+
+function MLQuad3(α::T, β::T, N::Integer,
+                contour::Symbol) where T <: AbstractFloat
+    if !(1≤α≤2)
+        throw(DomainError(α, "α must lie between 1 and 2"))
+    end
+    if contour == :hyperbola
+        qs = QSumH(T, N)
+    elseif contour == :parabola
+        qs = QSumP(T, N)
+    else
+        throw(ArgumentError("contour name unrecognised"))
+    end
+    return MLQuad3(α, β, qs)
+end
+
+function f3(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+    γ₊ = x^(1/α) * exp(complex(zero(T), π/α))
+    ϵ₊ = ( w - γ₊ ) / γ₊
+    γ₋= x^(1/α) * exp(complex(zero(T), -π/α))
+    ϵ₋ = ( w - γ₋) / γ₋
+    if abs(ϵ₊) < sep
+        numer  = ( ( w - γ₋ ) * ( ψ1(α-β, ϵ₊) - ψ2(α, ϵ₊)/α )
+                  - γ₊ * ψ1(α, ϵ₊)/α ) 
+        denom = γ₊^β * ψ1(α, ϵ₊) * ( w - γ₋ + γ₊*ϵ₊ )  
+        f₊ = numer / denom
+        f₋ = ( γ₊^(1-β) * (1+ϵ₊)^(α-β) / ( ψ1(α,ϵ₊)*( 2w - γ₊ - γ₋ ) )
+              - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
+    elseif abs(ϵ₋) < sep
+        numer  = ( ( w - γ₊ ) * ( ψ1(α-β, ϵ₋) - ψ2(α, ϵ₋)/α ) 
+                  - ψ1(α, ϵ₋) * γ₋ / α )
+        denom = γ₋^β * ψ1(α, ϵ₋) * ( 2w - γ₋ - γ₊ )  
+        f₋ = numer / denom
+        f₊ = ( γ₋^(1-β) * (1+ϵ₋)^(α-β) / ( ψ1(α,ϵ₋)*( 2w - γ₊ - γ₋ ) )
+              - γ₊^(1-β) / ( α * ( w - γ₊ ) ) )
+    else
+        f₊ = ( w^(α-β) * ( w - γ₋ ) / ( ( w^α + x ) * ( 2w - γ₊ - γ₋ ) )
+              - γ₊^(1-β) / ( α * ( w - γ₊ ) ) )
+        f₋ = ( w^(α-β) * ( w - γ₊ ) / ( ( w^α + x ) * ( 2w - γ₋ - γ₊ ) )
+              - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
+    end
+    return f₊, f₋
+end
+
+function (E::MLQuad3{T})(x::T) where T <: AbstractFloat
+    α, β, qs = E.α, E.β, E.qs
+    w, C, A = qs.w, qs.C, qs.A
+    sep = 1 / parse(T, "4")
+    if x < 0
+        throw(DomainError(x, "argument must be greater than or equal to zero"))
+    else
+        N = axes(w, 1)[end]
+        s = zero(T)
+        for n = 1:N
+            f₊, f₋ = f3(α, β, w[n], x, sep)
+            s += real( C[n] * ( f₊ + f₋ ) )
+        end
+        f₊, f₋ = f3(α, β, w[0], x, sep)
+        s = real( C[0] * ( f₊ + f₋ ) ) + 2s
+        sum_residues = (2/α) * ( x^((1-β)/α) * exp(x^(1/α)*cos(π/α))
+                 * cos( π*(1-β)/α + x^(1/α)*sinpi(1/α) ) )
+        return sum_residues + A * s
+    end
 end
 
 """
@@ -173,85 +354,6 @@ function ψ2(α::T, ϵ::Complex{T}, N=100) where T <: AbstractFloat
         error("ψ1 expansion did not converge after $N terms")
     end
     return s
-end
-
-function f2(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
-    xa = x^(1/α)
-    ϵ = ( w - xa ) / xa
-    if abs(ϵ) > sep
-        return w^(α-β) / (w^α-x) - 1 / (α*ϵ*x^(β/α))
-    else
-        return ( ψ1(α-β, ϵ) - ψ2(α, ϵ)/α ) / ( x^(β/α) * ψ1(α, ϵ) )
-    end
-end
-
-function (E::MLQuad2{T})(x::T) where T <: AbstractFloat
-    α, β, qs = E.α, E.β, E.qs
-    w, C, A = qs.w, qs.C, qs.A
-    sep = 1 / parse(T, "4")
-    if x < 0
-        throw(DomainError(x, "argument must be greater than or equal to zero"))
-    else
-        s = zero(T)
-        for n in axes(w, 1)
-            s += real( C[n] * f2(α, β, w[n], x, sep) )
-        end
-        return ( x^((1-β)/α) * exp(x^(1/α)) / α ) + A * s
-    end
-end
-
-function MLQuad3(α::T, β::T, N::Integer) where T <: AbstractFloat
-    if !(1≤α≤2)
-        throw(DomainError(α, "α must lie between 1 and 2"))
-    end
-    qs = QSum(T, N)
-    return MLQuad3(α, β, qs)
-end
-
-function f3(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
-    γ₊ = x^(1/α) * exp(complex(zero(T), π/α))
-    ϵ₊ = ( w - γ₊ ) / γ₊
-    γ₋= x^(1/α) * exp(complex(zero(T), -π/α))
-    ϵ₋ = ( w - γ₋) / γ₋
-    if abs(ϵ₊) < sep
-        numer  = ( ( w - γ₋ ) * ( ψ1(α-β, ϵ₊) - ψ2(α, ϵ₊)/α )
-                  - γ₊ * ψ1(α, ϵ₊)/α ) 
-        denom = γ₊^β * ψ1(α, ϵ₊) * ( w - γ₋ + γ₊*ϵ₊ )  
-        f₊ = numer / denom
-        f₋ = ( γ₊^(1-β) * (1+ϵ₊)^(α-β) / ( ψ1(α,ϵ₊)*( 2w - γ₊ - γ₋ ) )
-              - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
-    elseif abs(ϵ₋) < sep
-        numer  = ( ( w - γ₊ ) * ( ψ1(α-β, ϵ₋) - ψ2(α, ϵ₋)/α ) 
-                  - ψ1(α, ϵ₋) * γ₋ / α )
-        denom = γ₋^β * ψ1(α, ϵ₋) * ( 2w - γ₋ - γ₊ )  
-        f₋ = numer / denom
-        f₊ = ( γ₋^(1-β) * (1+ϵ₋)^(α-β) / ( ψ1(α,ϵ₋)*( 2w - γ₊ - γ₋ ) )
-              - γ₊^(1-β) / ( α * ( w - γ₊ ) ) )
-    else
-        f₊ = ( w^(α-β) * ( w - γ₋ ) / ( ( w^α + x ) * ( 2w - γ₊ - γ₋ ) )
-              - γ₊^(1-β) / ( α * ( w - γ₊ ) ) )
-        f₋ = ( w^(α-β) * ( w - γ₊ ) / ( ( w^α + x ) * ( 2w - γ₋ - γ₊ ) )
-              - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
-    end
-    return f₊, f₋
-end
-
-function (E::MLQuad3{T})(x::T) where T <: AbstractFloat
-    α, β, qs = E.α, E.β, E.qs
-    w, C, A = qs.w, qs.C, qs.A
-    sep = 1 / parse(T, "4")
-    if x < 0
-        throw(DomainError(x, "argument must be greater than or equal to zero"))
-    else
-        s = zero(T)
-        for n in axes(w, 1)
-            f₊, f₋ = f3(α, β, w[n], x, sep)
-            s += real( C[n] * ( f₊ + f₋ ) )
-        end
-        sum_residues = (2/α) * ( x^((1-β)/α) * exp(x^(1/α)*cos(π/α))
-                 * cos( π*(1-β)/α + x^(1/α)*sinpi(1/α) ) )
-        return sum_residues + A * s
-    end
 end
 
 end # module
