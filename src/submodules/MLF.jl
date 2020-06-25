@@ -197,10 +197,6 @@ function mlf10(α::T, β::T, z::Complex{T}, p::Integer) where T <: AbstractFloat
     return E
 end
 
-function exp_i(z::Complex{T}) where T <: AbstractFloat
-    return exp(Complex(zero(T),z))
-end
-
 function exp_i(t::T) where T <: AbstractFloat
     return exp(Complex(zero(T),t))
 end
