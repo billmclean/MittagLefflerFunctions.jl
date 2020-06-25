@@ -2,7 +2,7 @@ module Quadrature
 
 using OffsetArrays
 
-export MLQuad1, MLQuad2, MLQuad3
+export MLQuad, MLQuad1, MLQuad2, MLQuad3
 
 const ϕ_opt = "1.17210"
 
@@ -98,13 +98,13 @@ function QSumP(::Type{T}, N) where T <: AbstractFloat
     w = OffsetArray{Complex{T}}(undef, 0:N)
     C = OffsetArray{Complex{T}}(undef, 0:N)
     w[0] = Complex(μ, 0)
-    C[0] = Complex(exp(μ)/2, 0)
+    C[0] = Complex(exp(μ), 0)
     for n = 1:N
         one_plus_iun = Complex(1, n*h)
         w[n] = μ * one_plus_iun^2
         C[n] = exp(w[n]) * one_plus_iun
     end
-    A = 1 / 2
+    A = one(T) / 4
     return QSum(w, C, A)
 end
 
