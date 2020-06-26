@@ -2,6 +2,8 @@ module Quadrature
 
 using OffsetArrays
 
+using ..MittagLefflerFunctions: rΓ
+
 export MLQuad, MLQuad1, MLQuad2, MLQuad3
 
 const ϕ_opt = "1.17210"
@@ -22,8 +24,7 @@ struct QSum{T<:AbstractFloat}
 end
 
 """
-`MLQuad` holds data for computing the Mittag--Leffler function `Eαβ(z)`
-when `0<α<1`.
+`MLQuad` holds data for computing the Mittag--Leffler function `Eαβ(z)`.
 """
 struct MLQuad{T<:AbstractFloat}
     α::T
@@ -33,33 +34,47 @@ struct MLQuad{T<:AbstractFloat}
 end
 
 """
-`MLQuad1` holds data for computing the Mittag--Leffler function `Eαβ(-x)`
-when `x≥0` and `0<α<1`.
+`MLQuadPos` holds data for computing the Mittag--Leffler function `Eαβ(x)`
+when `x > 0`.
 """
-struct MLQuad1{T<:AbstractFloat}
+struct MLQuadPos{T<:AbstractFloat}
     α::T
     β::T
     qs::QSum{T}
+    sep::T
 end
 
 """
-`MLQuad2` holds data for computing the Mittag--Leffler function `Eαβ(x)`
-when `x≥0` and `0<α<2`.
+`MLQuadNeg` holds data for computing the Mittag--Leffler function `Eαβ(x)`
+when `x < 0`.
 """
-struct MLQuad2{T<:AbstractFloat}
+struct MLQuadNeg{T<:AbstractFloat}
     α::T
     β::T
     qs::QSum{T}
+    sep::T
 end
 
 """
-`MLQuad3` holds data for computing the Mittag--Leffler function `Eαβ(-x)`
-when `x≥0` and `1<α<2`.
+    QSumP(T, N)
+
+Construct quadrature sum using an optimised parabolic contour.
 """
-struct MLQuad3{T<:AbstractFloat}
-    α::T
-    β::T
-    qs::QSum{T}
+function QSumP(::Type{T}, N) where T <: AbstractFloat
+    fN = convert(T, N)
+    h = 3 / fN
+    μ = π * fN / 12
+    w = OffsetArray{Complex{T}}(undef, 0:N)
+    C = OffsetArray{Complex{T}}(undef, 0:N)
+    w[0] = Complex(μ, 0)
+    C[0] = Complex(exp(μ), 0)
+    for n = 1:N
+        one_plus_iun = Complex(1, n*h)
+        w[n] = μ * one_plus_iun^2
+        C[n] = exp(w[n]) * one_plus_iun
+    end
+    A = one(T) / 4
+    return QSum(w, C, A)
 end
 
 """
@@ -87,29 +102,13 @@ function QSumH(::Type{T}, N) where T <: AbstractFloat
 end
 
 """
-    QSumP(T, N)
+    MLQuad(α, β, N, contour, sep=0.2)
 
-Construct quadrature sum using an optimised parabolic contour.
+Creates an `MLQuad` object for computing `Eαβ(z)`.  The `contour` must be
+either a `:parabola` or `:hyperbola`.
 """
-function QSumP(::Type{T}, N) where T <: AbstractFloat
-    fN = convert(T, N)
-    h = 3 / fN
-    μ = π * fN / 12
-    w = OffsetArray{Complex{T}}(undef, 0:N)
-    C = OffsetArray{Complex{T}}(undef, 0:N)
-    w[0] = Complex(μ, 0)
-    C[0] = Complex(exp(μ), 0)
-    for n = 1:N
-        one_plus_iun = Complex(1, n*h)
-        w[n] = μ * one_plus_iun^2
-        C[n] = exp(w[n]) * one_plus_iun
-    end
-    A = one(T) / 4
-    return QSum(w, C, A)
-end
-
 function MLQuad(α::T, β::T, N::Integer,
-                contour::Symbol, sep::T) where T <: AbstractFloat
+                contour::Symbol, sep=0.2::T) where T <: AbstractFloat
     if α < 0
         throw(DomainError(α, "α must be non-negative"))
     end
@@ -118,7 +117,7 @@ function MLQuad(α::T, β::T, N::Integer,
     elseif contour == :parabola
         qs = QSumP(T, N)
     else
-        throw(ArgumentError(contour, "unrecognised"))
+        throw(DomainError(contour, "unrecognised"))
     end
     return MLQuad(α, β, qs, sep)
 end
@@ -176,52 +175,39 @@ function f(α::T, β::T, w::Complex{T}, z::Complex{T},
     end
 end
 
-function MLQuad1(α::T, β::T, N::Integer,
-                contour::Symbol) where T <: AbstractFloat
-    if !(0≤α≤1)
-        throw(DomainError(α, "α must lie between 0 and 1"))
-    end
-    if contour == :hyperbola
-        qs = QSumH(T, N)
-    elseif contour == :parabola
-        qs = QSumP(T, N)
-    else
-        throw(ArgumentError("contour name unrecognised"))
-    end
-    return MLQuad1(α, β, qs)
-end
-
-function (E::MLQuad1{T})(x::T) where T <: AbstractFloat
-    α, β, qs = E.α, E.β, E.qs
-    w, C, A = qs.w, qs.C, qs.A
-    if x < 0
-        throw(DomainError(x, "argument must be greater than or equal to zero"))
-    else
-        N = axes(w, 1)[end]
-        s = zero(T)
-        for n = 1:N
-            s += real( C[n] * w[n]^(α-β) / ( x + w[n]^α ) )
+function (E::MLQuad{T})(x::T) where T <: AbstractFloat
+    α, β, qs, sep = E.α, E.β, E.qs, E.sep
+    if α < 2
+        if x > 0
+            return mlfunc_pos(α, β, x, qs, sep)
+        elseif x < 0
+            if α < 1
+                return mlfunc_neg1(α, β, -x, qs, sep)
+            else
+                return mlfunc_neg2(α, β, -x, qs, sep)
+            end
+        else
+            return rΓ(β)
         end
-        return A * ( real( C[0] * w[0]^(α-β) / ( x + w[0]^α ) ) + 2s )
-    end
-end
-
-function MLQuad2(α::T, β::T, N::Integer,
-                contour::Symbol) where T <: AbstractFloat
-    if !(0≤α≤2)
-        throw(DomainError(α, "α must lie between 0 and 2"))
-    end
-    if contour == :hyperbola
-        qs = QSumH(T, N)
-    elseif contour == :parabola
-        qs = QSumP(T, N)
     else
-        throw(ArgumentError("contour name unrecognised"))
+        return real(E(Complex(x, zero(T))))
     end
-    return MLQuad2(α, β, qs)
 end
 
-function f2(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+function mlfunc_pos(α::T, β::T, x::T, 
+                qs::QSum{T}, sep::T) where T <: AbstractFloat
+    # Compute Eαβ(x) for x≥0 and 0 < α < 2.
+    w, C, A = qs.w, qs.C, qs.A
+    N = axes(w, 1)[end]
+    s = zero(T)
+    for n = 1:N
+        s += real( C[n] * f_pos(α, β, w[n], x, sep) )
+    end
+    s = real( C[0] * f_pos(α, β, w[0], x, sep) ) + 2s
+    return ( x^((1-β)/α) * exp(x^(1/α)) / α ) + A * s
+end
+
+function f_pos(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
     xa = x^(1/α)
     ϵ = ( w - xa ) / xa
     if abs(ϵ) > sep
@@ -231,39 +217,36 @@ function f2(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
     end
 end
 
-function (E::MLQuad2{T})(x::T) where T <: AbstractFloat
-    α, β, qs = E.α, E.β, E.qs
+function mlfunc_neg1(α::T, β::T, x::T, 
+                qs::QSum{T}, sep::T) where T <: AbstractFloat
+    # Compute Eαβ(-x) for x≥0 and 0 < α < 1.
     w, C, A = qs.w, qs.C, qs.A
-    sep = 1 / parse(T, "4")
-    if x < 0
-        throw(DomainError(x, "argument must be greater than or equal to zero"))
-    else
-        N = axes(w, 1)[end]
-        s = zero(T)
-        for n = 1:N
-            s += real( C[n] * f2(α, β, w[n], x, sep) )
-        end
-        s = real( C[0] * f2(α, β, w[0], x, sep) ) + 2s
-        return ( x^((1-β)/α) * exp(x^(1/α)) / α ) + A * s
+    N = axes(w, 1)[end]
+    s = zero(T)
+    for n = 1:N
+        s += real( C[n] * w[n]^(α-β) / ( x + w[n]^α ) )
     end
+    return A * ( real( C[0] * w[0]^(α-β) / ( x + w[0]^α ) ) + 2s )
 end
 
-function MLQuad3(α::T, β::T, N::Integer,
-                contour::Symbol) where T <: AbstractFloat
-    if !(1≤α≤2)
-        throw(DomainError(α, "α must lie between 1 and 2"))
+function mlfunc_neg2(α::T, β::T, x::T, 
+                qs::QSum{T}, sep::T) where T <: AbstractFloat
+    # Compute Eαβ(-x) for x≥0 and 1 < α < 2.
+    w, C, A = qs.w, qs.C, qs.A
+    N = axes(w, 1)[end]
+    s = zero(T)
+    for n = 1:N
+        f₊, f₋ = f_neg(α, β, w[n], x, sep)
+        s += real( C[n] * ( f₊ + f₋ ) )
     end
-    if contour == :hyperbola
-        qs = QSumH(T, N)
-    elseif contour == :parabola
-        qs = QSumP(T, N)
-    else
-        throw(ArgumentError("contour name unrecognised"))
-    end
-    return MLQuad3(α, β, qs)
+    f₊, f₋ = f_neg(α, β, w[0], x, sep)
+    s = real( C[0] * ( f₊ + f₋ ) ) + 2s
+    sum_residues = (2/α) * ( x^((1-β)/α) * exp(x^(1/α)*cos(π/α))
+             * cos( π*(1-β)/α + x^(1/α)*sinpi(1/α) ) )
+    return sum_residues + A * s
 end
 
-function f3(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
+function f_neg(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
     γ₊ = x^(1/α) * exp(complex(zero(T), π/α))
     ϵ₊ = ( w - γ₊ ) / γ₊
     γ₋= x^(1/α) * exp(complex(zero(T), -π/α))
@@ -289,27 +272,6 @@ function f3(α::T, β::T, w::Complex{T}, x::T, sep::T) where T <: AbstractFloat
               - γ₋^(1-β) / ( α * ( w - γ₋ ) ) )
     end
     return f₊, f₋
-end
-
-function (E::MLQuad3{T})(x::T) where T <: AbstractFloat
-    α, β, qs = E.α, E.β, E.qs
-    w, C, A = qs.w, qs.C, qs.A
-    sep = 1 / parse(T, "4")
-    if x < 0
-        throw(DomainError(x, "argument must be greater than or equal to zero"))
-    else
-        N = axes(w, 1)[end]
-        s = zero(T)
-        for n = 1:N
-            f₊, f₋ = f3(α, β, w[n], x, sep)
-            s += real( C[n] * ( f₊ + f₋ ) )
-        end
-        f₊, f₋ = f3(α, β, w[0], x, sep)
-        s = real( C[0] * ( f₊ + f₋ ) ) + 2s
-        sum_residues = (2/α) * ( x^((1-β)/α) * exp(x^(1/α)*cos(π/α))
-                 * cos( π*(1-β)/α + x^(1/α)*sinpi(1/α) ) )
-        return sum_residues + A * s
-    end
 end
 
 """

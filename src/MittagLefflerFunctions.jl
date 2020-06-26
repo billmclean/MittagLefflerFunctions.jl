@@ -26,7 +26,7 @@ using .Quadrature
 using .MLF
 
 export MLPade
-export MLQuad1, MLQuad2, MLQuad3
+export MLQuad
 export mlf
 
 end # module
