@@ -12,9 +12,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{example}[theorem]{Example}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \DeclareMathOperator*{\res}{res}
 \newcommand{\arcosh}{\operatorname{arcosh}}
+\newcommand{\diag}{\operatorname{diag}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % %
 \begin{document}
@@ -812,6 +814,159 @@ Q_{h,N}(x)&=\frac{1}{4}\sum_{n=-N}^Ne^{w_n}f(w_n;x)(1+inh)\\
     e^{w_n}f(w_n;x)(1+inh)\bigr)\biggr).
 \end{align*}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Carath\'eodory--Fejer method}
+Let $D=\{\,z\in\mathbb{C}:|z|<1\,\}$ denote the open unit disk in the complex 
+plane, so that its boundary~$\partial D=\{\,z\in\mathbb{C}:|z|=1\,\}$ is the 
+unit circle.  Given a function~$F:[-1,1]\to\mathbb{R}$ and an integer~$M\ge0$, 
+denote the partial Chebyshev expansion of~$F$ by
+\[
+F_M(x)=\tfrac12 a_0+\sum_{k=1}^Ma_kT_k(x)\quad\text{for $-1\le x\le 1$,}
+\]
+where $T_k$ denote the Chebyshev polynomial (of the first kind) with degree~$k$,
+and
+\[
+a_k=\frac{2}{\pi}\int_{-1}^1\frac{F(x)T_k(x)}{\sqrt{1-x^2}}\,dx
+\]
+is the $k$th Chebyshev coefficient of~$F$.  The change of variable
+\[
+x=\Re z=\tfrac12(z+z^{-1})
+\]
+defines a bijection~$z\mapsto x$ from the unit circle~$\partial D$ onto the 
+real interval~$[-1,1]$, with
+\[
+T_k(x)=\tfrac12(z^k+z^{-k}).
+\]
+Put $a_{-k}=a_k$ and define
+\[
+f_M(z)=\sum_{k=-M}^M a_kz^k,
+\]
+and given fixed integers $m\ge 0$~and $n\ge0$, let
+\[
+f^+(z)=\sum_{m-n+1}^M a_kz^k\quad\text{and}\quad
+f^0(z)=\begin{cases}
+    \sum_{k=n-m}^{m-n}a_kz^k,&\text{if $m\ge n$,}\\
+    \sum_{k=m-n+1}^{n-m-1}a_kz^k&\text{if $m<n$.}
+       \end{cases}
+\]
+In this way,
+\begin{equation}\label{eq: FM}
+F_M(x)=\tfrac12f_M(z)=\tfrac12\bigl[f^+(z)+f^+(z^{-1}) +f^0(z)\bigr].
+\end{equation}
+
+We wish to approximate $F(x)$ by a rational function of type~$(m,n)$, that is,
+by a function $R(x)=p(x)/q(z)$ where $p$~and $q$ are real polynomials of degree 
+$m$~and $n$, respectively.  Let $V_{mn}$ denote the set of such rational 
+functions, and let $\tilde V_{mn}$ denote the set of functions of the form
+\[
+\tilde r(z)=\sum_{k=-\infty}^m d_kz^k\bigg/\sum_{k=0}^n e_kz^k,
+\]
+where the coefficients $d_k$~and $e_k$ are real, the numerator converges to 
+a bounded analytic function in~$|z|>1$ and the denominator has no zeros 
+in~$D\cup\partial D$.
+
+Construct a real, $(M-m+n)\times(M-m+n)$ symmetric Hankel matrix
+\[
+H=[H_{ij}]\quad\text{where}\quad
+H_{ij}=\begin{cases}
+    a_{m-n+i+j},&\text{if $i+j\le M-m+n$,}\\
+    0,&\text{otherwise.}
+\end{cases}
+\]
+
+\begin{example}
+If $M=5$, $m=3$ and $n=4$, then
+\[
+H=\begin{bmatrix}
+a_0&a_1&a_2&a_3&a_4&a_5\\
+a_1&a_2&a_3&a_4&a_5&0\\
+a_2&a_3&a_4&a_5&0  &0\\
+a_3&a_4&a_5&0  &0  &0\\
+a_4&a_5&0  &0  &0  &0\\
+a_5&0  &0  &0  &0  &0
+\end{bmatrix}.
+\]
+\end{example}
+
+Since $H$ is real and symmetric, it has an eigenvalue decomposition
+\[
+H=U\Lambda U^\top,
+\]
+where $U=[\boldsymbol{u}_1\quad\boldsymbol{u}_2\quad\cdots
+\quad\boldsymbol{u}_{M-m+n}]$ is orthogonal and 
+$\Lambda=\diag(\lambda_1,\lambda_2,\ldots,
+\lambda_{M-m+n})$.  We order the (real) eigenvalues by absolute magnitude:
+\[
+|\lambda_1|\ge|\lambda_2|\ge\cdots\ge|\lambda_{M-m+n}|.
+\]
+We denote the $(n+1)$st eigenvalue and eigenvector by
+\[
+\lambda=\lambda_{n+1}\quad\text{and}\quad
+\boldsymbol{u}_{n+1}=[u_1,u_2,\ldots,u_{M-m+n}]^\top,
+\]
+and define
+\begin{align*}
+b(z)&=\lambda z^M\sum_{j=1}^{M-m+n}u_jz^{j-1}\bigg/
+\sum_{j=1}^{M-m+n}u_{M-m+n-j+1}z^{j-1}\\
+    &=\lambda z^M\,\frac{u_1+u_2z+\cdots+u_{M-m+n}z^{M-m+n-1}}%
+{u_{M-m+n}+u_{M-m+n-1}z+\cdots+u_1z^{M_n-m+n-1}}
+\end{align*}
+and
+\[
+\upsilon(z)=\sum_{j=1}^{M-m+n}u_jz^{j-1}.
+\]
+Since
+\[
+\sum_{j=1}^{M-m+n}u_{M-m+n-j+1}z^{j-1}=\sum_{j=1}^{M-m+n}u_jz^{M-m+n-j+1}
+    =M^{M-m+n}\upsilon(z^{-1})
+\]
+we see that
+\[
+b(z)=\lambda z^{m-n}\frac{\upsilon(z)}{\upsilon(z^{-1})}.
+\]
+Thus, $|b(z)|=|\lambda|$ for~$z\in\partial D$.
+
+\begin{theorem}
+The function $\tilde r^*=f^+-b$ is the unique best approximation to~$f^+$
+from $\tilde V_{mn}$ on~$\partial D$, that is, $\tilde r^*$ is the unique 
+function in~$V_{mn}$ satisfying
+\[
+\|f^+-\tilde r^*\|_{L_\infty(\partial D)}=\min_{g\in\tilde V_{mn}}
+\|f^+-g\|_{L_\infty(\partial D)}.
+\]
+Moreover, 
+\[
+\|f^+-\tilde r^*\|_{L_\infty(\partial D)}=|\lambda|,
+\]
+and if $|\lambda_n|>|\lambda|>|\lambda_{n+2}|$ then the winding number 
+of~$b$ is $m+n+1$.  
+\end{theorem}
+\begin{proof}
+See~\cite[Theorem~1]{TrefethenGutknecht1983}.
+\end{proof}
+
+Define
+\[
+\tilde R(x)=\tfrac12\bigl[\tilde r^*(z)+\tilde r^*(z^{-1})+f^0(z)\bigr],
+\]
+and observe that by~\eqref{eq: FM},
+\[
+\tilde R(x)=\tfrac12\bigl[f_M(z)-b(z)-b(z^{-1})\bigr]
+    =F_M(x)-\tfrac12[b(z)+b(z^{-1})],
+\]
+so
+\[
+F_M(x)-\tilde R(x)=\Re b(z).
+\]
+The theorem above implies that there are points
+\[
+1=x_0>x_1>\cdots>x_{m+n+1}=-1
+\]
+such that
+\[
+\|F_M-\tilde R\|_\infty=|\lambda|\quad\text{and}\quad
+(F_M-\tilde R)(x_j)=(-1)^j\lambda\quad\text{for $0\le j\le m+n+1$.}
+\]
 
 
 
