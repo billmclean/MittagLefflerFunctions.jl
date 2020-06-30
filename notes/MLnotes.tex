@@ -17,6 +17,7 @@
 \DeclareMathOperator*{\res}{res}
 \newcommand{\arcosh}{\operatorname{arcosh}}
 \newcommand{\diag}{\operatorname{diag}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % %
 \begin{document}
@@ -821,7 +822,9 @@ plane, so that its boundary~$\partial D=\{\,z\in\mathbb{C}:|z|=1\,\}$ is the
 unit circle.  Given a function~$F:[-1,1]\to\mathbb{R}$ and an integer~$M\ge0$, 
 denote the partial Chebyshev expansion of~$F$ by
 \[
-F_M(x)=\tfrac12 a_0+\sum_{k=1}^Ma_kT_k(x)\quad\text{for $-1\le x\le 1$,}
+F_M(x)=\sideset{}{'}\sum_{k=0}^Ma_kT_k(x)
+    \equiv\tfrac12 a_0+\sum_{k=1}^Ma_kT_k(x)\quad\text{for 
+$-1\le x\le 1$,}
 \]
 where $T_k$ denote the Chebyshev polynomial (of the first kind) with degree~$k$,
 and
@@ -843,10 +846,10 @@ f_M(z)=\sum_{k=-M}^M a_kz^k,
 \]
 and given fixed integers $m\ge 0$~and $n\ge0$, let
 \[
-f^+(z)=\sum_{m-n+1}^M a_kz^k\quad\text{and}\quad
+f^+(z)=\sum_{k=m-n+1}^M a_kz^k\quad\text{and}\quad
 f^0(z)=\begin{cases}
     \sum_{k=n-m}^{m-n}a_kz^k,&\text{if $m\ge n$,}\\
-    \sum_{k=m-n+1}^{n-m-1}a_kz^k&\text{if $m<n$.}
+    -\sum_{k=m-n+1}^{n-m-1}a_kz^k&\text{if $m<n$.}
        \end{cases}
 \]
 In this way,
@@ -902,29 +905,39 @@ $\Lambda=\diag(\lambda_1,\lambda_2,\ldots,
 We denote the $(n+1)$st eigenvalue and eigenvector by
 \[
 \lambda=\lambda_{n+1}\quad\text{and}\quad
-\boldsymbol{u}_{n+1}=[u_1,u_2,\ldots,u_{M-m+n}]^\top,
+\boldsymbol{u}_{n+1}=[u_0,u_1,\ldots,u_{M-m+n-1}]^\top,
 \]
 and define
 \begin{align*}
-b(z)&=\lambda z^M\sum_{j=1}^{M-m+n}u_jz^{j-1}\bigg/
-\sum_{j=1}^{M-m+n}u_{M-m+n-j+1}z^{j-1}\\
-    &=\lambda z^M\,\frac{u_1+u_2z+\cdots+u_{M-m+n}z^{M-m+n-1}}%
-{u_{M-m+n}+u_{M-m+n-1}z+\cdots+u_1z^{M_n-m+n-1}}
+b(z)&=\lambda z^M\sum_{j=0}^{M-m+n-1}u_jz^j\bigg/
+\sum_{j=0}^{M-m+n-1}u_{M-m+n-j}z^j\\
+    &=\lambda z^M\,\frac{u_0+u_1z+\cdots+u_{M-m+n-1}z^{M-m+n-1}}%
+{u_{M-m+n-1}+u_{M-m+n-2}z+\cdots+u_0z^{M_n-m+n-1}}
 \end{align*}
 and
 \[
-\upsilon(z)=\sum_{j=1}^{M-m+n}u_jz^{j-1}.
+\upsilon(z)=\sum_{j=0}^{M-m+n-1}u_jz^j.
 \]
 Since
 \[
-\sum_{j=1}^{M-m+n}u_{M-m+n-j+1}z^{j-1}=\sum_{j=1}^{M-m+n}u_jz^{M-m+n-j+1}
+\sum_{j=0}^{M-m+n-1}u_{M-m+n-j}z^j=\sum_{j=0}^{M-m+n-1}u_0z^{M-m+n-j}
     =M^{M-m+n}\upsilon(z^{-1})
 \]
 we see that
 \[
 b(z)=\lambda z^{m-n}\frac{\upsilon(z)}{\upsilon(z^{-1})}.
 \]
-Thus, $|b(z)|=|\lambda|$ for~$z\in\partial D$.
+Thus, $|b(z)|=|\lambda|$ for~$z\in\partial D$, and since $\lambda$ and the 
+components of~$\boldsymbol{u}_{n+1}$ are real,
+\begin{equation}\label{eq: b zbar}
+\overline{\upsilon(z)}=\upsilon(\bar z)\quad\text{and}\quad
+\overline{b(z)}=b(\bar z), 
+\end{equation}
+and in particular,
+\[
+\overline{\upsilon(z)}=\upsilon(z^{-1})\quad\text{and}\quad
+\overline{b(z)}=b(z^{-1})\quad\text{for $z\in\partial D$.}
+\]
 
 \begin{theorem}
 The function $\tilde r^*=f^+-b$ is the unique best approximation to~$f^+$
@@ -950,10 +963,10 @@ Define
 \tilde R(x)=\tfrac12\bigl[\tilde r^*(z)+\tilde r^*(z^{-1})+f^0(z)\bigr],
 \]
 and observe that by~\eqref{eq: FM},
-\[
+\begin{equation}\label{eq: Rtilde FM}
 \tilde R(x)=\tfrac12\bigl[f_M(z)-b(z)-b(z^{-1})\bigr]
     =F_M(x)-\tfrac12[b(z)+b(z^{-1})],
-\]
+\end{equation}
 so
 \[
 F_M(x)-\tilde R(x)=\Re b(z).
@@ -968,7 +981,184 @@ such that
 (F_M-\tilde R)(x_j)=(-1)^j\lambda\quad\text{for $0\le j\le m+n+1$.}
 \]
 
+Let
+\[
+B(x)=\tfrac12[b(z)+b(z^{-1})]=\sideset{}{'}\sum_{k=0}^\infty b_kT_k(x)
+\]
+and note that the Chebyshev coefficients
+\[
+b_k=\frac{2}{\pi}\int_{-1}^1\frac{B(x)T_k(x)}{\sqrt{1-x^2}}\,dx
+    =\frac{2}{\pi}\int_0^\pi B(\cos\theta)\cos(k\theta)\,d\theta.
+\]
+Thus, by~\eqref{eq: Rtilde FM},
+\[
+\tilde R(x)=\sideset{}{'}\sum_{k=0}^\infty\tilde c_kT_k(x)
+\quad\text{where}\quad\tilde c_k=a_k-b_k.
+\]
 
+Let us factorize the denominator of~$b(z)$,
+\[
+\sum_{k=0}^{M-m+n-1}u_{M-m+n-j}z^j=u_0\prod_{j=1}^{M-m+n}(z-\zeta_j),
+\]
+and number the zeros~$\zeta_j$ so that
+\[
+\begin{aligned}
+|\zeta_j|&>1&&\text{for $1\le j\le J$,}\\
+|\zeta_j|&<1&&\text{for $J+1\le j\le M-m+n$.}
+\end{aligned}
+\]
+Define
+\[
+q(z)=\prod_{j=1}^J\frac{z-\zeta_j}{-\zeta_j},
+\]
+which satisfies $q(0)=1$, and
+\[
+Q(x)=\frac{q(z)q(z^{-1})}{q(i)q(-i)},
+\]
+which satisfies $Q(0)=1$ and $|Q(x)|>0$ for~$-1\le x\le 1$.  We therefore have 
+a Chebyshev expansion,
+\[
+\frac{1}{Q(x)}=\sideset{}{'}\sum_{k=0}^{2J}\gamma_kT_k(x).
+\]
+Finally, we define
+\[
+P(x)=\sideset{}{'}\sum_{k=0}^m\beta_kT_k(x)
+\]
+where the Chebyshev coefficients satisfy
+\[
+\begin{bmatrix}
+\gamma_0     &\gamma_1&\cdots&\gamma_m    &\cdots&\gamma_{2m-1}&\gamma_{2m}\\
+\gamma_1     &\gamma_0&\cdots&\gamma_{m-1}&\cdots&\gamma_{2m-2}&\gamma_{2m-1}\\
+\vdots       &\vdots  &\ddots&\vdots      &\ddots&\vdots       &\vdots\\
+\gamma_m     &\gamma_{m-1}&\cdots&\gamma_0&\cdots&\gamma_{m-1} &\gamma_m\\
+\vdots       &\vdots  &\ddots&\vdots      &\ddots&\vdots       &\vdots\\
+\gamma_{2m-1}&\gamma_{2m-2}&\cdots&\gamma_{m-1}&\cdots&\gamma_0&\gamma_1\\
+\gamma_{2m}  &\gamma_{2m-1}&\cdots&\gamma_m&\cdots&\gamma_1&\gamma_0
+\end{bmatrix}
+\begin{bmatrix}\beta_0\\ \beta_1\\ \vdots\\ \beta_m\\ \vdots\\ \beta_1\\ \beta_0
+\end{bmatrix}
+=\begin{bmatrix}\tilde c_m\\ \tilde c_{m-1}\\ \vdots\\ \tilde c_0\\ \vdots\\
+\tilde c_{m-1}\\ \tilde c_m
+ \end{bmatrix}.
+\]
+Here, the symmetric Toeplitz matrix is known to be positive definite.  Our 
+rational approximation is then
+\[
+F(x)\approx R(x)=\frac{P(x)}{Q(x)}.
+\]
+
+If we are given a function $G:[0,\infty]\to\mathbb{R}$, then by putting
+\[
+F(x)=G(t)\quad\text{where}\quad t=\frac{1+x}{1-x},
+\]
+we can construct $R(x)$ as above and use
+\[
+G(t)\approx R(x)\quad\text{where}\quad x=\frac{t-1}{t+1}.
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Adaptive Antoulas--Anderson algorithm}
+We work with the barycentric representation
+\[
+r(z)=\frac{n(z)}{d(z)}
+\quad\text{where}\quad
+n(z)=\sum_{j=1}^m\frac{w_jf_j}{z-z_j}
+\quad\text{and}\quad
+d(z)=\sum_{j=1}^m\frac{w_j}{z-z_j},
+\]
+for a set of distinct (real or complex) \emph{support points} $z_1$, $z_2$, 
+\dots, $z_m$.  The \emph{data values} $f_1$, $f_2$, \dots, $f_m$ and 
+\emph{weight} $w_1$, $w_2$, \dots, $w_m$ may also be real or complex.  The 
+\emph{node polynomial} associated with the support points is
+\[
+\ell(z)=\prod_{j=1}^m(z-z_j),
+\]
+and if we define the polynomials of degree at most~$m-1$,
+\[
+p(z)=\ell(z)n(z)=\sum_{j=1}^mw_jf_j\prod_{\substack{k=1\\ k\ne j}}^m(z-z_k)
+\quad\text{and}\quad 
+q(z)=\ell(z)d(z)=\sum_{j=1}^mw_j\prod_{\substack{k=1\\ k\ne j}}^m(z-z_k),
+\]
+then
+\[
+r(z)=\frac{p(z)}{q(z)}.
+\]
+
+The AAA algorithm requires as input a large 
+\emph{sample set}~$S=\{s_k\}_{k=1}^K\subseteq\mathbb{C}$.  In step~1,
+we define the constant approximation
+\[
+r^{(1)}=\frac{1}{K}\sum_{k=1}^Kf(s_j)
+\]
+and choose $z_1\in S$ by requiring
+\[
+|f(z_1)-r^{(0)}|=\max_{z\in S}|f(z)-r^{(0)}|.
+\]
+Defining $f_1=f(z_1)$, $S^{(1)}=S\setminus\{z_1\}$ and the discrete 2-norm
+\[
+\|g\|_{S^{(1)}}=\sqrt{\sum_{k=1}^K|g(s_j)|^2},
+\]
+we choose
+\[
+w^{(1)}_1=\argmin_{|w|=1}
+\bigl\|fd^{(1)}-n^{(1)}\bigr\|_{S^{(1)}},
+\]
+where
+\[
+n^{(1)}(z)=\frac{w^{(1)}_1f_1}{z-z_1}\quad\text{and}\quad
+d^{(1)}(z)=\frac{w^{(1)}_1}{z-z_1}.
+\]
+
+For~$m\ge1$, at the start of the $m$th step we have already constructed
+\[
+r^{(m-1)}(z)=\frac{n^{(m-1)}(z)}{d^{(m-1)}(z)},\quad
+n^{(m-1)}(z)=\sum_{j=1}^{m-1}\frac{w^{(m-1)}_jf_j}{z-z_j},\quad
+d^{(m-1)}(z)=\sum_{j=1}^{m-1}\frac{w^{(m-1)}_j}{z-z_j}.
+\]
+We choose $z_m\in S^{(m-1)}=S\setminus\{z_1,z_2,\ldots,z_{m-1}\}$ by requiring
+\[
+\bigl|f(z_m)-r^{(m-1)}(z_m)\bigr|=\max_{z\in S^{(m-1)}}
+    \bigl|f(z)-r^{(m-1)}(z)\bigr|,
+\]
+and put $f_m=f(z_m)$.  The vector of 
+weights~$\boldsymbol{w}^{(m)}\in\mathbb{C}^m$ is then chosen as
+\[
+\boldsymbol{w}^{(m-1)}=\argmin_{\|w\|=1}\|fd^{(m)}-n^{(m)}\|_{S^{(m)}}.
+\]
+We stop the iteration when this norm falls below the desired error threshhold.
+
+To solve the least-squares problem at the $m$th step, we enumerate the elements 
+of the set~$S^{(m)}=\{s_{k_1},s_{k_2},\ldots,s_{k_{M-m}}\}$ and 
+define the column vectors
+\[
+\boldsymbol{S}^{(m)}=\begin{bmatrix}s_{k_1}\\ s_{k_2}\\ \vdots\\
+s_{k_{M-m}}\end{bmatrix}
+\quad\text{and}\quad
+\boldsymbol{F}^{(m)}=\begin{bmatrix}f(s_{k_1})\\ f(s_{k_2})\\ 
+\vdots\\ f(s_{k_{M-m}})\end{bmatrix},
+\]
+so that
+\[
+f(s_{k_i})d^{(m)}(s_{k_i})-n^{(m)}(s_{k_i})
+    =\sum_{j=1}^m\frac{F^{(m)}_i-f_j}{S^{(m)}_i-z_j}\,w_j
+    =(A^{(m)}\boldsymbol{w})_i,
+\]
+where the $(M-m)\times m$ matrix~$A^{(m)}$ has entries
+\[
+(A^{(m)})_{ij}=\frac{F^{(m)}_i-f_j}{S^{(m)}_i-z_j}
+\quad\text{for $1\le i\le M-m$ and $1\le j\le m$.}
+\]
+We compute the thin singular value decomposition $A^{(m)}=U\Sigma V^*$,
+so $\Sigma=\diag(\sigma_1,\sigma_2,\ldots,\sigma_m)$ is $(M-m)\times m$ and 
+\[
+\|A^{(m)}\boldsymbol{w}\|^2=\|\Sigma V^*\boldsymbol{w}\|^2
+    =\sum_{j=1}^m\bigl(\sigma_j\boldsymbol{v}_j^*\boldsymbol{w}\bigr)^2,
+\]
+where $\boldsymbol{v}_j$ is the $j$th column of~$V$.  Since
+$\sigma_1\ge\sigma_2\ge\cdots\ge\sigma_m$, the norm is minimised choosing
+$\boldsymbol{w}=\boldsymbol{v}_m$, in which case
+\[
+\|fd^{(m)}-n^{(m)}\|_{S^{(m)}}=\|A^{(m)}\boldsymbol{w}^{(m)}\|=\sigma_m.
+\]
 
 
 
