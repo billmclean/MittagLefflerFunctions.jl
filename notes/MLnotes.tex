@@ -915,17 +915,17 @@ b(z)&=\lambda z^M\sum_{j=0}^{M-m+n-1}u_jz^j\bigg/
 {u_{M-m+n-1}+u_{M-m+n-2}z+\cdots+u_0z^{M_n-m+n-1}}
 \end{align*}
 and
-\[
-\upsilon(z)=\sum_{j=0}^{M-m+n-1}u_jz^j.
-\]
+\begin{equation}\label{eq: upsilon}
+\upsilon(z)=\sum_{j=0}^{M-m+n-1}u_{M-m+n-j}z^j.
+\end{equation}
 Since
 \[
-\sum_{j=0}^{M-m+n-1}u_{M-m+n-j}z^j=\sum_{j=0}^{M-m+n-1}u_0z^{M-m+n-j}
+\sum_{j=0}^{M-m+n-1}u_jz^j=\sum_{j=0}^{M-m+n-1}u_{M-m+n-j}z^{M-m+n-j}
     =M^{M-m+n}\upsilon(z^{-1})
 \]
 we see that
 \[
-b(z)=\lambda z^{m-n}\frac{\upsilon(z)}{\upsilon(z^{-1})}.
+b(z)=\lambda z^{m-n}\frac{\upsilon(z^{-1})}{\upsilon(z)}.
 \]
 Thus, $|b(z)|=|\lambda|$ for~$z\in\partial D$, and since $\lambda$ and the 
 components of~$\boldsymbol{u}_{n+1}$ are real,
@@ -969,7 +969,7 @@ and observe that by~\eqref{eq: FM},
 \end{equation}
 so
 \[
-F_M(x)-\tilde R(x)=\Re b(z).
+\tilde R(x)=F_M(x)-\Re b(z).
 \]
 The theorem above implies that there are points
 \[
@@ -996,9 +996,9 @@ Thus, by~\eqref{eq: Rtilde FM},
 \quad\text{where}\quad\tilde c_k=a_k-b_k.
 \]
 
-Let us factorize the denominator of~$b(z)$,
+Let us factorize the polynomial~\eqref{eq: upsilon},
 \[
-\sum_{k=0}^{M-m+n-1}u_{M-m+n-j}z^j=u_0\prod_{j=1}^{M-m+n}(z-\zeta_j),
+\upsilon(z)=u_0\prod_{j=1}^{M-m+n}(z-\zeta_j),
 \]
 and number the zeros~$\zeta_j$ so that
 \[
@@ -1013,12 +1013,15 @@ q(z)=\prod_{j=1}^J\frac{z-\zeta_j}{-\zeta_j},
 \]
 which satisfies $q(0)=1$, and
 \[
-Q(x)=\frac{q(z)q(z^{-1})}{q(i)q(-i)},
+Q(x)=\frac{q(z)q(z^{-1})}{q(i)q(-i)}
+    =\prod_{j=1}^J\frac{(z-\zeta_j)(z^{-1}-\zeta_j)}{(i-\zeta_j)(-i-\zeta_j)}
+    =\prod_{j=1}^J\frac{1+\zeta_j^2-2x\zeta_j}{1+\zeta_j^2}
+    =\prod_{j=1}^J\biggl(1-\frac{2x\zeta_j}{1+\zeta_j^2}\biggr),
 \]
 which satisfies $Q(0)=1$ and $|Q(x)|>0$ for~$-1\le x\le 1$.  We therefore have 
 a Chebyshev expansion,
 \[
-\frac{1}{Q(x)}=\sideset{}{'}\sum_{k=0}^{2J}\gamma_kT_k(x).
+\frac{1}{Q(x)}=\sideset{}{'}\sum_{k=0}^\infty\gamma_kT_k(x).
 \]
 Finally, we define
 \[
@@ -1035,7 +1038,8 @@ where the Chebyshev coefficients satisfy
 \gamma_{2m-1}&\gamma_{2m-2}&\cdots&\gamma_{m-1}&\cdots&\gamma_0&\gamma_1\\
 \gamma_{2m}  &\gamma_{2m-1}&\cdots&\gamma_m&\cdots&\gamma_1&\gamma_0
 \end{bmatrix}
-\begin{bmatrix}\beta_0\\ \beta_1\\ \vdots\\ \beta_m\\ \vdots\\ \beta_1\\ \beta_0
+\begin{bmatrix}\beta_m\\ \beta_{m-1}\\ \vdots\\ \beta_0\\ \vdots\\ 
+\beta_{m-1}\\ \beta_m
 \end{bmatrix}
 =\begin{bmatrix}\tilde c_m\\ \tilde c_{m-1}\\ \vdots\\ \tilde c_0\\ \vdots\\
 \tilde c_{m-1}\\ \tilde c_m
@@ -1131,18 +1135,18 @@ of the set~$S^{(m)}=\{s_{k_1},s_{k_2},\ldots,s_{k_{M-m}}\}$ and
 define the column vectors
 \[
 \boldsymbol{S}^{(m)}=\begin{bmatrix}s_{k_1}\\ s_{k_2}\\ \vdots\\
-s_{k_{M-m}}\end{bmatrix}
+s_{k_{K-m}}\end{bmatrix}
 \quad\text{and}\quad
 \boldsymbol{F}^{(m)}=\begin{bmatrix}f(s_{k_1})\\ f(s_{k_2})\\ 
-\vdots\\ f(s_{k_{M-m}})\end{bmatrix},
+\vdots\\ f(s_{k_{K-m}})\end{bmatrix},
 \]
 so that
-\[
+\begin{equation}\label{eq: Aw}
 f(s_{k_i})d^{(m)}(s_{k_i})-n^{(m)}(s_{k_i})
     =\sum_{j=1}^m\frac{F^{(m)}_i-f_j}{S^{(m)}_i-z_j}\,w_j
     =(A^{(m)}\boldsymbol{w})_i,
-\]
-where the $(M-m)\times m$ matrix~$A^{(m)}$ has entries
+\end{equation}
+where the $(K-m)\times m$ matrix~$A^{(m)}$ has entries
 \[
 (A^{(m)})_{ij}=\frac{F^{(m)}_i-f_j}{S^{(m)}_i-z_j}
 \quad\text{for $1\le i\le M-m$ and $1\le j\le m$.}
@@ -1160,6 +1164,192 @@ $\boldsymbol{w}=\boldsymbol{v}_m$, in which case
 \|fd^{(m)}-n^{(m)}\|_{S^{(m)}}=\|A^{(m)}\boldsymbol{w}^{(m)}\|=\sigma_m.
 \]
 
+In an alternative, non-interpolatory approach we set
+\[
+n(z)=\sum_{j=1}^m\frac{\alpha_j}{z-z_j}\quad\text{and}\quad
+d(z)=\sum_{j=1}^m\frac{\beta_j}{z-z_j},
+\]
+so that instead of~\eqref{eq: Aw},
+\[
+f(s_i)d^{(m)}(s_i)-n^{(m)}(s_i)=\sum_{j=1}^m
+\frac{\beta_jF_i-\alpha_j}{s_i-z_j}
+    =\bigl(A_1^{(m)}\boldsymbol{\alpha}+A_2^{(m)}\boldsymbol{\beta}\bigr)_i,
+\]
+where the $K\times m$~matrices $A_1^{(m)}$~and $A_2^{(m)}$ have entries
+\[
+(A_1^{(m)})_{ij}=\frac{-1}{s_i-z_j}\quad\text{and}\quad
+(A_2^{(m)})_{ij}=\frac{F_i}{s_i-z_j}.
+\]
+Let $A^{(m)}=[A_1^{(m)}\quad A_2^{(m)}]$ so that
+\[
+A_1^{(m)}\boldsymbol{\alpha}+A_2^{(m)}\boldsymbol{\beta}
+    =A^{(m)}\begin{bmatrix}\boldsymbol{\alpha}\\ \boldsymbol{\beta} 
+\end{bmatrix}.
+\]
+We compute the SVD $A^{(m)}=U\Sigma V^\top$ and put
+\[
+\begin{bmatrix}\boldsymbol{\alpha}\\ \boldsymbol{\beta}\end{bmatrix}
+    =V\boldsymbol{e}_{2m}.
+\]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A rational Remez algorithm}
+For a function~$f:[a,b]\to\mathbb{R}$ we seek a rational approximation in 
+barycentric form,
+\[
+r(x)=\frac{N(x)}{D(x)},\qquad
+N(x)=\sum_{k=0}^n\frac{\alpha_k}{x-t_k},\qquad
+D(x)=\sum_{k=0}^n\frac{\beta_k}{x-t_k}.
+\]
+The node polynomial associated with the~$t_k$ is denoted
+\[
+\omega_t(x)=\prod_{k=0}^n(x-t_k),
+\]
+so $r(x)=p(x)/q(x)$ where $p(x)=\omega_t(x)N(x)$~and $q(x)=\omega_t(x)D(x)$ are 
+polynomials of degree~$n$.  The optimal $L_\infty$ approximation~$r^*$ has the 
+equioscillation property
+\[
+f(x_l)-r^*(x_l)=(-1)^{l+1}\lambda\quad\text{for $0\le l\le 2n+1$,}
+\]
+with 
+\[
+a\le x_0<x_1<\cdots<x_{2n+1}\le b\quad\text{and}\quad
+\lambda=\|f-r^*\|_{L_\infty(a,b)},
+\]
+assuming no degeneracy.
+
+In the Remez algorithm, we start from candidate points~$x_l$ and seek weights
+$\alpha_k$~and $\beta_k$, along with a value~$\lambda$, such that the resulting
+$r$ has the equioscillation property.  We then update the~$x_l$ to be the local 
+extrema of this~$r$, and iterate until the amplitudes of the local extrema are 
+constant to within a desired tolerance.
+
+The equioscillation property is equivalent to
+\[
+f(x_l)D(x_l)-N(x_l)=(-1)^{l+1}\lambda D(x_l)\quad\text{for $0\le l\le2n+1$,}
+\]
+which in turn is equivalent to the vector equation
+\begin{equation}\label{eq: equiosc matrix}
+FC\boldsymbol{\beta}-C\boldsymbol{\alpha}=\lambda S\boldsymbol{\beta},
+\end{equation}
+where
+\begin{gather*}
+\boldsymbol{\alpha}=\begin{bmatrix}
+\alpha_0\\ \alpha_1\\ \vdots\\\alpha_n \end{bmatrix},\qquad
+\boldsymbol{\beta}=\begin{bmatrix}
+\beta_0\\ \beta_1\\ \vdots\\ \beta_n\end{bmatrix},\qquad
+F=\begin{bmatrix}
+f(x_0)&      &      &\\
+      &f(x_1)&      &\\
+      &      &\ddots&\\
+      &      &      &f(x_{2n+1}
+\end{bmatrix},\\
+C=\begin{bmatrix}
+(x_0-t_0)^{-1}&(x_0-t_1)^{-1}&\cdots&(x_0-t_n)^{-1}\\
+(x_1-t_0)^{-1}&(x_1-t_1)^{-1}&\cdots&(x_1-t_n)^{-1}\\
+\vdots        &\vdots        &\ddots&\vdots\\
+(x_{2n+1}-t_0)^{-1}&(x_{2n+1}-t_1)^{-1}&\cdots&(x_{2n+1}-t_n)^{-1}
+\end{bmatrix},\qquad
+S=\begin{bmatrix}
+-1&  &     &\\
+  &1 &     &\\
+  &  &\dots&\\
+  &  &     &1
+\end{bmatrix}.
+\end{gather*}
+Let
+\[
+\Delta=\begin{bmatrix}
+\dfrac{\omega_t(x_0)^2}{\omega_x'(x_0)}& & &\\
+&\dfrac{\omega_t(x_1)^2}{\omega_x'(x_1)}& &\\  
+& &\ddots&\\
+& & &\dfrac{\omega_t(x_{2n+1})^2}{\omega_x'(x_{2n+1})}
+\end{bmatrix},
+\]
+and multiply \eqref{eq: equiosc matrix} on the left 
+by~$|\Delta|^{1/2}=(S\Delta)^{1/2}$ so obtain
+\begin{equation}\label{eq: equiosc Delta}
+F|\Delta|^{1/2}C\boldsymbol{\beta}-|\Delta|^{1/2}C\boldsymbol{\alpha}
+    =\lambda S|\Delta|^{1/2}C\boldsymbol{\beta}.
+\end{equation}
+Note that if $x_l=t_k$ for some $l$~and $k$, then $C_{lk}$ is undefined, but we 
+can still make sense of
+\[
+(|\Delta|^{1/2}C)_{lk}=\frac{1}{\sqrt{|\omega'_x(x_l)|}}\biggl|
+\prod_{\substack{p=0\\ p\ne k}}^n(x_k-x_p)\biggr|.
+\]
+
+Take the thin $QR$ decomposition
+\[
+|\Delta|^{1/2}C=Q_1R,
+\]
+and put $Q_2=SQ_1$.  It can be shown~\cite[Lemma~4.3]{FilipEtAl2018} that
+$C^\top\Delta C=0$, and therefore, since $S^2=I$,
+\[
+0=C^\top S^2\Delta C=(|\Delta|^{-1/2}Q_1R)^\top S|\Delta|C
+    =R^TQ_1^\top|\Delta|^{-1/2}S|\Delta|^{1/2}Q_1R
+    =R^TQ_1^\top SQ_1R.
+\]
+Thus, $R^\top Q_2^\top Q_1R=0$, and it is 
+known~\cite[Theorem~4.4]{FilipEtAl2018} that
+$R$ is non-singular, so $Q_2^\top Q_1=0$.  Rewriting \eqref{eq: equiosc Delta} 
+as
+\begin{equation}\label{eq: equiosc Q1}
+FQ_1R\boldsymbol{\beta}-Q_1R\boldsymbol{\alpha}
+    =\lambda SQ_1R\boldsymbol{\beta}.
+\end{equation}
+we multiply on the left by~$Q_2^\top=Q_1^\top S$ to 
+eliminate~$\boldsymbol{\alpha}$ and obtain
+\[
+Q_1^\top(SF)Q_1R\boldsymbol{\beta}=\lambda Q_1^\top S^2Q_1R\boldsymbol{\beta}
+    =\lambda R\boldsymbol{\beta}.
+\]
+Equivalently,
+\[
+Q_1^\top(SF)Q_1\boldsymbol{y}=\lambda\boldsymbol{y}
+\quad\text{where}\quad\boldsymbol{y}=R\bold\boldmath{\beta},
+\]
+so we can compute $\boldsymbol{\beta}$ and $\lambda$ by solving a symmetric 
+eigenvalue problem.  Multiplying \eqref{eq: equiosc Q1} on the left 
+by~$Q_1^\top$ gives
+\[
+Q_1^\top FQ_1\boldsymbol{y}-R\boldsymbol{\alpha}
+    =\lambda Q_1^\top SQ_1\boldsymbol{y}
+    =\lambda Q_2^\top Q_1\boldsymbol{y}=\boldsymbol{0},
+\]
+and so we can determine $\boldsymbol{\alpha}$ by solving
+\[
+R\boldsymbol{\alpha}=Q_1^\top FQ_1\boldsymbol{y}.
+\]
+It can be shown that at most one eigenpair yields $q(x)=\omega_t(x)D(x)$ with 
+no root in~$[a,b]$.  We can determine this eigenpair by examining the signs of
+\[
+q(x_l)=\omega_t(x_l)\sum_{k=0}^n\frac{\beta_k}{x_l-t_k}
+    =\sum_{k=0}^n\beta_k\prod_{\substack{p=0\\ p\ne k}}^n(x_l-t_p)
+\]
+
+Note that
+\[
+\omega_x'(x)=\frac{d}{dx}\prod_{l=0}^{2n+1}(x-x_l)
+    =\sum_{l=0}^{2n+1}\prod_{\substack{p=0\\p\ne l}}^{2n+1}(x-x_p)
+\]
+so
+\[
+\omega_x'(x_l)=\prod_{\substack{p=0\\p\ne l}}^{2n+1}(x_l-x_p)
+\quad\text{with}\quad
+\omega_t(x_l)=\prod_{k=0}^n(x_l-t_k).
+\]
+Also,
+\[
+S_{ll}\omega'_x(x_l)=(-1)^{l+1}\prod_{\substack{p=0\\p\ne l}}^{2n+1}(x_l-x_p)
+    =(-1)^{l+1}\biggl(\prod_{p=0}^{l-1}(x_l-x_p)\biggr)
+    \biggl((-1)^{2n+1-l}\prod_{p=l+1}^{2n+1}(x_p-x_l)\biggr),
+\]
+showing that
+\[
+S_{ll}\omega'_x(x_l)=(-1)^{l+1}\prod_{\substack{p=0\\p\ne l}}^{2n+1}(x_l-x_p)
+    =(-1)^{2n+2}\biggl(\prod_{p=0}^{l-1}(x_l-x_p)\biggr)
+    \biggl(\prod_{p=l+1}^{2n+1}(x_p-x_l)\biggr)>0.
+\]
 
 
 
