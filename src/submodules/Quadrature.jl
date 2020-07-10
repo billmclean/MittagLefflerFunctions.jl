@@ -181,7 +181,7 @@ function (E::MLQuad{T})(x::T) where T <: AbstractFloat
         if x > 0
             return mlfunc_pos(α, β, x, qs, sep)
         elseif x < 0
-            if α < 1
+            if α ≤ 1
                 return mlfunc_neg1(α, β, -x, qs, sep)
             else
                 return mlfunc_neg2(α, β, -x, qs, sep)
