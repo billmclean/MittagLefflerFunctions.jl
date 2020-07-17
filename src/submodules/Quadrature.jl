@@ -108,7 +108,7 @@ Creates an `MLQuad` object for computing `Eαβ(z)`.  The `contour` must be
 either a `:parabola` or `:hyperbola`.
 """
 function MLQuad(α::T, β::T, N::Integer,
-                contour::Symbol, sep=0.2::T) where T <: AbstractFloat
+                contour::Symbol, sep=one(T)/5) where T <: AbstractFloat
     if α < 0
         throw(DomainError(α, "α must be non-negative"))
     end

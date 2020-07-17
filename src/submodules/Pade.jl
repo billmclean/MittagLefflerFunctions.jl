@@ -2,7 +2,7 @@ module Pade
 
 using ..MittagLefflerFunctions: rΓ
 using OffsetArrays
-using LinearAlgebra: svd
+using LinearAlgebra: svd, lu
 
 export MLPade
 
@@ -15,12 +15,17 @@ struct MLPade{T<:AbstractFloat}
     q :: Vector{T}
 end
 
-function MLPade(α::T, β::T, m::Integer, n::Integer) where T <: AbstractFloat
+function MLPade(α::T, β::T, m::Integer, n::Integer,
+                method::Symbol) where T <: AbstractFloat
     A = pade_matrix(α, β, m, n)
-    if T == Float64 
+    if method == :fix
+        p, q = pade_fix(A)
+    elseif method == :svd
         p, q, y = pade_svd(A)
+    elseif method == :lu
+        p, q = pade_lu(A)
     else
-        p, q, y = pade_lu(A)
+        error("Unknown error $method")
     end
     return MLPade(α, β, m, n, p, q)
 end
@@ -144,6 +149,18 @@ function pade_lu(A::Matrix{T}) where T <: AbstractFloat
     for k = 1:r+1
         q[k] /= μ
     end
+    return p, q
+end
+
+function pade_fix(A::Matrix{T}) where T <: AbstractFloat
+    r = div(size(A,1), 2)
+    Atilde = [ A[:,1:r] A[:,r+2:2r+1] ]
+    b = -A[:,r+1]
+    y = Atilde \ b
+    p = y[1:r]
+    q = Vector{T}(undef, r+1)
+    q[1] = one(T)
+    q[2:r+1] = y[r+1:2r]
     return p, q
 end
 
