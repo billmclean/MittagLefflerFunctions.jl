@@ -14,7 +14,7 @@ grid(true)
 axis((-50, 10, -5, 50))
 xlabel(L"$\Re w$", fontsize=12)
 ylabel(L"$\Im w$", fontsize=12)
-savefig("figure4L.pdf")
+savefig("figure04L.pdf")
 
 figure(2)
 for k = 1:4
@@ -26,7 +26,7 @@ grid(true)
 axis((-50, 10,-5, 50))
 xlabel(L"$\Re w$", fontsize=12)
 ylabel(L"$\Im w$", fontsize=12)
-savefig("figure4R.pdf")
+savefig("figure04R.pdf")
 
 figure(4)
 for k = 1:4
@@ -38,7 +38,7 @@ grid(true)
 xlabel(L"$n$", fontsize=12)
 ylabel(L"$|C_n|$", fontsize=12)
 xylims = axis()
-savefig("figure5L.pdf")
+savefig("figure05L.pdf")
 
 figure(3)
 for k = 1:4
@@ -51,4 +51,4 @@ grid(true)
 axis(xylims)
 xlabel(L"$n$", fontsize=12)
 ylabel(L"$|C_n|$", fontsize=12)
-savefig("figure5R.pdf")
+savefig("figure05R.pdf")

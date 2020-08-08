@@ -28,4 +28,4 @@ end
 legend()
 grid(true)
 xlabel(L"$x$")
-savefig("figure9.pdf")
+savefig("figure09.pdf")

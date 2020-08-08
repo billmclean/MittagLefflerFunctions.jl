@@ -11,12 +11,13 @@ y = erfcx.(-x)
 
 Nvals = collect(4:2:10)
 
+style = ("-", "--", ":", "-.")
 function draw_errors(contour::Symbol)
     for row = 1:length(Nvals)
         N = Nvals[row]
         E = MLQuad(α, β, N, contour)
         err = abs.( y - E.(x) )
-        semilogy(x, err, label="N = $N") 
+        semilogy(x, err, style[row], label="N = $N") 
     end
     legend(loc="upper right")
     grid(true)
@@ -27,10 +28,10 @@ figure(1)
 draw_errors(:parabola)
 xylims = (-5.4, 3.4, 3e-12, 6e-4)
 axis(xylims)
-savefig("figure7L.pdf")
+savefig("figure07L.pdf")
 
 figure(2)
 draw_errors(:hyperbola)
-savefig("figure7R.pdf")
+savefig("figure07R.pdf")
 axis(xylims)
 
