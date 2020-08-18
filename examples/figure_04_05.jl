@@ -31,19 +31,20 @@ savefig("figure04R.pdf")
 figure(4)
 for k = 1:4
     qs = QSumH(Float64, N[k])
-    semilogy(collect(0:N[k]), abs.(qs.C), marker[k], label="N = $N")
+    semilogy(collect(0:N[k]), abs.(qs.C), marker[k], label="N = $(N[k])")
 end
 legend()
 grid(true)
 xlabel(L"$n$", fontsize=12)
 ylabel(L"$|C_n|$", fontsize=12)
 xylims = axis()
+xticks(collect(0:4:20))
 savefig("figure05L.pdf")
 
 figure(3)
 for k = 1:4
     qs = QSumP(Float64, N[k])
-    semilogy(collect(0:N[k]), abs.(qs.C), marker[k], label="N = $N")
+    semilogy(collect(0:N[k]), abs.(qs.C), marker[k], label="N = $(N[k])")
 end
 legend()
 grid(true)
@@ -51,4 +52,5 @@ grid(true)
 axis(xylims)
 xlabel(L"$n$", fontsize=12)
 ylabel(L"$|C_n|$", fontsize=12)
+xticks(collect(0:4:20))
 savefig("figure05R.pdf")
