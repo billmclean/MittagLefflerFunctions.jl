@@ -21,8 +21,8 @@ function asymp_coeffs(α, β, N)
             σ[n] = 1.0
             τ[n] = 1 / Γ(β-n*α)
         else
-            σ[n] = -sin(π*(n*α-β)) / π
-            τ[n] = Γ(1+n*α-β)
+            σ[n] = -sin(π*(n*α-β))
+            τ[n] = Γ(1+n*α-β) / π
         end
     end
     return σ, τ
