@@ -146,8 +146,8 @@ function mlfunc(α::T, β::T, z::Complex{T},
             γ = r^(1/α) * exp(Complex(zero(T), θ/α))
             s = C[0] * f(α, β, w[0], z, sep)
             for n = 1:N
-                s += (        C[n] * f(α, β, w[n], z, sep)
-                      + conj(C[n]) * f(α, β, conj(w[n]), z, sep) )
+                s += (        C[n] * f1(α, β, w[n], z, sep)
+                      + conj(C[n]) * f1(α, β, conj(w[n]), z, sep) )
             end
             Eαβ = γ^(1-β) * exp(γ) / α + A * s
         end
@@ -163,7 +163,7 @@ function mlfunc(α::T, β::T, z::Complex{T},
     return Eαβ
 end
 
-function f(α::T, β::T, w::Complex{T}, z::Complex{T},
+function f1(α::T, β::T, w::Complex{T}, z::Complex{T},
            sep::T) where T <: AbstractFloat
     r, θ = abs(z), angle(z)
     γ = r^(1/α) * exp(Complex(zero(T), θ/α))
