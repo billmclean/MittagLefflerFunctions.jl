@@ -1,4 +1,4 @@
-import MittagLefflerFunctions.MLF.mlf1
+import MittagLefflerFunctions.MLF: mlf1
 
 α = 1/2
 β = 1.0
@@ -16,7 +16,7 @@ z = Complex(5.5, 0.0)
 @assert ( 1 ≤ α < 2 ) && ( abs(z) ≤ floor(20/(2.1-α)^(5.5-2α)) )
 
 val = mlf1(α, β, z, 10)
-Eq = MLQuad2(α, β, 10)
+Eq = MLQuad(α, β, 10, :hyperbola)
 ref = Eq(real(z))
 
 @test abs(val-ref) ≤ 1e-10 * abs(ref)
